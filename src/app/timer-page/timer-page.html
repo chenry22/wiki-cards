@@ -1,0 +1,33 @@
+<div id="content">
+    <div class="timer">
+        <div id="time">
+            {{ displayTime() }}
+        </div>
+        <div class="timer-controls">
+            <div class="change-time">
+                <button matIconButton id="timer-increment" 
+                    (click)="incrementTimer()" aria-label="Add 5 minutes">
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+                <button matIconButton id="timer-decrement" 
+                    (click)="decrementTimer()" aria-label="Subtract 5 minutes">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+            </div>
+            <button matIconButton id="timer-begin" 
+                (click)="beginTimer()" aria-label="Begin timer">
+                <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button matIconButton id="timer-pause" 
+                (click)="pauseTimer()" aria-label="Pause timer">
+                <mat-icon>pause</mat-icon>
+            </button>
+            <button matIconButton id="timer-stop" 
+                (click)="stopTimer()" aria-label="Stop timer">
+                <mat-icon>stop</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <
+</div>

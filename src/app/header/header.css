@@ -1,0 +1,11 @@
+.title {
+    width: 100%;
+    text-align: center;
+}
+mat-toolbar {
+    background-color: rgb(7, 7, 61);
+    color: white;
+}
+mat-icon {
+    color: white;
+}

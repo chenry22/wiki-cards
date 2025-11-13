@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+#content {
+    display: flex;
+    justify-content: center;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    gap: 20px;
+
+    padding: 40px;
+    background-color: pink;
+    border-radius: 60px;
+}
+
+#time {
+    font-family: "Quantico", sans-serif;
+    padding: 80px;
+    background-color: white;
+    font-size: 3.5em;
+    letter-spacing: 0.1em;
+    border-radius: 40px;
+}
+
+.timer-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.change-time {
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+mat-icon {
+    transform: scale(1.5);
+}
