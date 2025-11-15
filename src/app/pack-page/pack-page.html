@@ -1,24 +1,16 @@
 <div id="content">
     <div id="cards">
-        <div (click)="getRandomWikiPages()" id="pack">
-            LOAD 5 CARDS
-        </div>
-
-        @for (page of pages; track $index) {
-            <mat-card class="card">
+        @for (page of pages; track $index; let idx = $index) {
+            <mat-card [attr.id]="page.id" [attr.class]="page.class">
                 <mat-card-title>{{ page.title }}</mat-card-title>
                 <mat-card-subtitle><a target="_blank" [href]="page.link">Wiki Link</a></mat-card-subtitle>
                 <img mat-card-image src="{{ page.thumbnail }}" alt="{{ page.title }}"/>
                 <mat-card-content>
-                    <ul>
-                        @for (item of page.desc; track $index) {
-                            <li>{{ item }}</li>
-                        }
-                    </ul>
+                    {{ page.desc }}
                 </mat-card-content>
             </mat-card>
         } @empty {
-            <div>[ Empty ]</div>
+            <div>[ Loading... ]</div>
         }
     </div>
 </div>

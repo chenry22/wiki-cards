@@ -3,6 +3,7 @@
     text-align: center;
 }
 mat-toolbar {
+    height: 50px;
     background-color: rgb(7, 7, 61);
     color: white;
 }
