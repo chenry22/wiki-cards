@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Firebase } from '../firebase';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './header.css',
 })
 export class Header {
-
+  firebase = inject(Firebase);
 }
 

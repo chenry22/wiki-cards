@@ -1,0 +1,9 @@
+<div class="main">
+    <form>
+        <label for="username">
+            Username: 
+            <input id="username" type="text" placeholder="Username" [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
+        </label>
+    </form>
+    <button (click)="login()">Submit</button>
+</div>
