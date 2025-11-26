@@ -10,3 +10,10 @@ mat-toolbar {
 mat-icon {
     color: white;
 }
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

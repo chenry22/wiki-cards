@@ -1,7 +1,27 @@
 <mat-toolbar color="secondary">
-    <button matIconButton class="toolbar-icon" aria-label="Menu">
-        <mat-icon>menu</mat-icon>
-    </button>
+    <span class="menu-item" [matMenuTriggerFor]="menu">
+        <button matIconButton class="toolbar-icon" aria-label="Menu">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span [matMenuTriggerFor]="menu">Menu</span>
+    </span>
+
+    <mat-menu #menu="matMenu">
+        <a mat-menu-item routerLink="/timer">Timer</a>
+        <a mat-menu-item routerLink="/packs">Packs</a>
+    </mat-menu>
+
     <span class="title">WikiCards</span>
-    <span class="">{{ firebase.username }}</span>
+
+    <span class="menu-item" [matMenuTriggerFor]="profile">
+        <button matIconButton class="toolbar-icon" aria-label="Person">
+            <mat-icon>person</mat-icon>
+        </button>
+        <span class="username">{{ firebase.username }}</span>
+    </span>
+
+    <mat-menu #profile="matMenu">
+        <button mat-menu-item>Collection</button>
+        <button mat-menu-item (click)="signOut()">Sign Out</button>
+    </mat-menu>
 </mat-toolbar>

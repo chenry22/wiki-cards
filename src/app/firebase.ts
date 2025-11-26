@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { Auth, onAuthStateChanged, signInAnonymously, user } from '@angular/fire/auth'
+import { Auth, onAuthStateChanged, signInAnonymously, signOut, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -11,32 +11,31 @@ export class Firebase {
   firestore = inject(Firestore);
   auth = inject(Auth);
 
-  uid: string = "";
   username: string = "";
 
   constructor() {
-    var usernameCheck = localStorage.getItem('username');
-    if (this.auth.currentUser != null && usernameCheck != null) {
-      this.username = usernameCheck;
-      this.router.navigateByUrl('/timer');
-    }
-
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         console.log("New user signed in!");
-         this.uid = user.uid;
+        this.username = localStorage.getItem('username') ?? "-error-";
       } else {
-        // signed out
+        console.log("User signed out")
+        this.username = "";
+        this.router.navigateByUrl('/');
       }
     });
   }
 
   async signIn(username: string) {
     var newUser = doc(this.firestore, "users", username);
+    localStorage.setItem('username', username);
     await signInAnonymously(this.auth);
     await setDoc(newUser, { lastLogin: new Date() }, { merge: true});
-    this.username = username;
-    localStorage.setItem('username', username);
     return true;
+  }
+
+  async signOut() {
+    localStorage.removeItem('username');
+    await signOut(this.auth);
   }
 }

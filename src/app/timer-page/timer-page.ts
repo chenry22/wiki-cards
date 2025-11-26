@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Firebase } from '../firebase';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-timer-page',
@@ -19,6 +21,12 @@ export class TimerPage {
 
   private timerActive = false;
   private packAvailable = false;
+
+  constructor(firebase: Firebase, router: Router) {
+    if (firebase.username === "") {
+      router.navigateByUrl("/");
+    }
+  }
 
   formatTime(seconds: number) {
     if (seconds > 60) {

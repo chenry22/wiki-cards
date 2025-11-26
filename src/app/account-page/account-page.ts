@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Firebase } from '../firebase';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 interface User {
   username: string,
@@ -20,10 +21,12 @@ export class AccountPage {
   nav = inject(Router);
 
   constructor () {
-    if (this.firebase.username !== "") {
-      // redirect to home
-      this.nav.navigateByUrl("timer");
-    }
+    onAuthStateChanged(this.firebase.auth, (user) => {
+      if (user) {
+        console.log("New user signed in!");
+        this.nav.navigateByUrl("timer");
+      }
+    });
   }
 
   async login() {

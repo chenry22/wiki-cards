@@ -1,16 +1,49 @@
 <div id="content">
-    <div id="cards">
-        @for (page of pages; track $index; let idx = $index) {
-            <mat-card [attr.id]="page.id" [attr.class]="page.class">
-                <mat-card-title>{{ page.title }}</mat-card-title>
-                <mat-card-subtitle><a target="_blank" [href]="page.link">Wiki Link</a></mat-card-subtitle>
-                <img mat-card-image src="{{ page.thumbnail }}" alt="{{ page.title }}"/>
-                <mat-card-content>
-                    {{ page.desc }}
-                </mat-card-content>
-            </mat-card>
-        } @empty {
-            <div>[ Loading... ]</div>
-        }
-    </div>
+    @if (state === PackState.Sealed) {
+        <div class="pack-view" (click)="openPack()">
+                Tap to Open Pack
+        </div>
+    }
+
+    @if (state === PackState.Revealing) {
+        <div class="reveal-view">
+            <div id="cards">
+                @if (currIndex > 0) {
+                    <button matFab aria-label="Previous card" (click)="commitSwipe('left')">
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </button>
+                } @else {
+                    <span></span>
+                }
+                <mat-card [attr.id]="pages[currIndex].id" [attr.class]="pages[currIndex].class">
+                    <mat-card-title>{{ pages[currIndex].title }}</mat-card-title>
+                    <img mat-card-image src="{{ pages[currIndex].thumbnail }}" alt="{{ pages[currIndex].title }}"/>
+                    <mat-card-content>
+                        @for (d of pages[currIndex].desc.split('=='); track $index; let idx = $index) {
+                            @if (idx % 2 == 0) {
+                                <span>{{ d }}</span>
+                            } @else {
+                                <span><b><i>== {{ d }} ==</i></b></span>
+                            }
+                            <br><br>
+                        }
+                    </mat-card-content>
+                    <mat-card-subtitle><a target="_blank" [href]="pages[currIndex].link">Wiki Link</a></mat-card-subtitle>
+                </mat-card>
+                @if (currIndex < pages.length - 1) {
+                    <button matFab aria-label="Next card" (click)="commitSwipe('right')">
+                        <mat-icon>arrow_forward_ios</mat-icon>
+                    </button>
+                } @else {
+                    <span></span>
+                }
+            </div>
+
+            @if (pages.length === packSize) {
+                <button class="claim-button" matButton="filled" (click)="claimPack()">Claim Cards</button>
+            } @else {
+                <mat-spinner></mat-spinner>
+            }
+        </div>
+    }
 </div>

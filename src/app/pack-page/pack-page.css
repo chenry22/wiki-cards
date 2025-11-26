@@ -3,7 +3,26 @@
     overflow-y: hidden;
     display: flex;
     justify-content: center;
-    background-color: rgb(172, 172, 193);
+    background-color: rgb(106, 106, 133);
+}
+
+.pack-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    font-weight: bold;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 4px;
+    height: 40px;
+}
+
+.reveal-view {
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+    gap: 20px;
 }
 
 #parent {
@@ -12,46 +31,22 @@
 
 #cards {
     margin: auto;
-    width: 400px;
     height: fit-content;
-    padding: 20px 40px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 80px;
 
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.cards::-webkit-scrollbar {
-    display: none;
-}
-.cards::-webkit-scrollbar-thumb {
-    background: black;
-    border-radius: 10px;
-}
-.cards::-webkit-scrollbar-track {
-    background: transparent;
 }
 
 .card {
-    scroll-snap-align: start;
     flex-shrink: 0;
 
     width: 400px;
     height: 500px;
     padding: 40px 20px;
-    margin-right: 80px;
-    border-radius: 10px;
+    border-radius: 4px;
 
     background: #eee;
-    transform-origin: center center;
-    transform: scale(1);
-    transition: transform 0.5s;
     position: relative;
     
     display: flex;
@@ -59,6 +54,10 @@
     justify-content: center;
     align-items: center;
     box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
+
+    transition: transform 0.25s cubic-bezier(.22,.61,.36,1); /* smooth */
+    touch-action: none;
+    will-change: transform;
 }
 
 .card img {
@@ -66,7 +65,7 @@
     max-width: 90%;
     object-fit: cover;
     margin: 20px auto;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 .common {
@@ -83,4 +82,14 @@
 }
 .legendary {
     border: 4px solid yellow;
+}
+
+mat-card-title {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+
+.claim-button {
+    width: 100px;
+    margin: 0 auto;
+    padding: 4px; 
 }

@@ -1,22 +1,37 @@
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+
+enum PackState {
+  Sealed,
+  Revealing,
+  Summary
+}
 
 @Component({
   selector: 'app-pack-page',
-  imports: [MatCardModule],
+  imports: [MatCardModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './pack-page.html',
   styleUrl: './pack-page.css',
 })
-export class PackPage implements OnInit {
-  public pages: any[] = [];
+export class PackPage {
+  public pages: any[] = []; // cards
 
-  ngOnInit() {
-    this.openPack();
-  }
+  PackState = PackState;
+  state: PackState = PackState.Sealed;
+  packSize = 6;
+
+  swipeLocked = false;
+  currIndex = 0;
+  currentX = 0;
 
   async openPack() {
     this.pages = [];
-    for(var i = 0; i < 6; i++) {
+    this.state = PackState.Revealing;
+
+    for(var i = 0; i < this.packSize; i++) {
       var rarity;
       var chance = Math.random();
       if (chance < 0.38) {
@@ -35,6 +50,26 @@ export class PackPage implements OnInit {
       this.pages.push(page[0]);
     }
   }
+
+  async claimPack() {
+    // send signal to firebase with cards
+  }
+
+  commitSwipe(direction: 'left' | 'right') {
+    if (this.swipeLocked) return;
+    this.swipeLocked = true;
+
+    // Animate card off-screen
+    this.currentX = direction === 'right' ? 1000 : -1000;
+
+    setTimeout(() => {
+      this.currIndex += direction === 'left' ? -1 : 1;
+      this.currentX = 0;
+      this.swipeLocked = false;
+    }, 250);
+  }
+
+
 
   // wikipedia api stuff
   async getRandomWikiPages(count=5, rarity="common") {
@@ -117,7 +152,7 @@ export class PackPage implements OnInit {
         action: 'query',
         format: 'json',
         prop: 'extracts',
-        exsentences: '4',
+        exsentences: '5',
         exlimit: '1',
         titles: pages[i].title, // String(r[3][0]).split("/")[String(r[3][0]).split("/").length - 1],
         explaintext: '1',
@@ -125,7 +160,7 @@ export class PackPage implements OnInit {
       }
       url = "https://en.wikipedia.org/w/api.php?origin=*&" + new URLSearchParams(params2).toString()
       var rev = await (await fetch(url)).json();
-      var maxLen = 300
+      var maxLen = 400
       if (rev.query.pages[0].extract) {
         if (String(rev.query.pages[0].extract).length > maxLen) {
           pages[i].desc = String(rev.query.pages[0].extract).substring(0, maxLen - 3) + "..."
