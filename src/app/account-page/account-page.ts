@@ -24,15 +24,15 @@ export class AccountPage {
     onAuthStateChanged(this.firebase.auth, (user) => {
       if (user) {
         console.log("New user signed in!");
-        this.nav.navigateByUrl("timer");
+        this.nav.navigateByUrl("");
       }
     });
   }
 
   async login() {
-    console.log(this.username);
+    this.username = this.username.toLowerCase();
     if (this.username !== "" && await this.firebase.signIn(this.username)) {
-      this.nav.navigateByUrl("timer");
+      this.nav.navigateByUrl("");
     }
   }
 }

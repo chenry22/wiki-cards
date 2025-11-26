@@ -7,11 +7,11 @@
     </span>
 
     <mat-menu #menu="matMenu">
-        <a mat-menu-item routerLink="/timer">Timer</a>
+        <a mat-menu-item routerLink="/">Timer</a>
         <a mat-menu-item routerLink="/packs">Packs</a>
     </mat-menu>
 
-    <span class="title">WikiCards</span>
+    <span class="title"><a routerLink="/">WikiCards</a></span>
 
     <span class="menu-item" [matMenuTriggerFor]="profile">
         <button matIconButton class="toolbar-icon" aria-label="Person">
@@ -22,6 +22,10 @@
 
     <mat-menu #profile="matMenu">
         <button mat-menu-item>Collection</button>
-        <button mat-menu-item (click)="signOut()">Sign Out</button>
+        @if (firebase.username === "") {
+            <a mat-menu-item routerLink="/sign_in">Sign In</a>
+        } @else {
+            <button mat-menu-item (click)="signOut()">Sign Out</button>
+        }
     </mat-menu>
 </mat-toolbar>

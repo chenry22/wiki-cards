@@ -9,13 +9,20 @@
         <div class="reveal-view">
             <div id="cards">
                 @if (currIndex > 0) {
-                    <button matFab aria-label="Previous card" (click)="commitSwipe('left')">
+                    <button matFab aria-label="Previous card" (click)="commitSwipe('left')" class="card-button">
                         <mat-icon>arrow_back_ios</mat-icon>
                     </button>
                 } @else {
                     <span></span>
                 }
-                <mat-card [attr.id]="pages[currIndex].id" [attr.class]="pages[currIndex].class">
+                <mat-card 
+                    (pointerdown)="onPointerDown($event)"
+                    (pointermove)="onPointerMove($event)"
+                    (pointerup)="onPointerUp($event)"
+                    [style.transform]="'translateX(' + currentX + 'px)'"
+                    [style.rotate]="rotationX + 'deg'"
+                    [attr.id]="pages[currIndex].id" [attr.class]="pages[currIndex].class"
+                >
                     <mat-card-title>{{ pages[currIndex].title }}</mat-card-title>
                     <img mat-card-image src="{{ pages[currIndex].thumbnail }}" alt="{{ pages[currIndex].title }}"/>
                     <mat-card-content>
@@ -23,15 +30,15 @@
                             @if (idx % 2 == 0) {
                                 <span>{{ d }}</span>
                             } @else {
-                                <span><b><i>== {{ d }} ==</i></b></span>
+                                <span>-</span>
                             }
-                            <br><br>
+                            <br>
                         }
                     </mat-card-content>
                     <mat-card-subtitle><a target="_blank" [href]="pages[currIndex].link">Wiki Link</a></mat-card-subtitle>
                 </mat-card>
                 @if (currIndex < pages.length - 1) {
-                    <button matFab aria-label="Next card" (click)="commitSwipe('right')">
+                    <button matFab aria-label="Next card" (click)="commitSwipe('right')" class="card-button">
                         <mat-icon>arrow_forward_ios</mat-icon>
                     </button>
                 } @else {
@@ -42,7 +49,7 @@
             @if (pages.length === packSize) {
                 <button class="claim-button" matButton="filled" (click)="claimPack()">Claim Cards</button>
             } @else {
-                <mat-spinner></mat-spinner>
+                <mat-spinner size="20" active-indicator-color="#ffffff"/>
             }
         </div>
     }

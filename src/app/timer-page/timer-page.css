@@ -2,10 +2,16 @@
 
 #content {
     display: flex;
+    flex-direction: column;
+    gap: 50px;
     justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+    height: calc(100vh - 50px);
 }
 
 .timer {
+    height: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,13 +19,15 @@
     gap: 20px;
 
     padding: 40px;
-    background-color: pink;
-    border-radius: 60px;
+    background-color: rgb(169, 165, 221);
+    border-radius: 20px;
 }
 
 #time {
     font-family: "Quantico", sans-serif;
     padding: 80px;
+    width: 200px;
+    text-align: center;
     background-color: white;
     font-size: 3.5em;
     letter-spacing: 0.1em;
@@ -29,7 +37,7 @@
 .timer-controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
 }
 
 .change-time {
@@ -41,5 +49,5 @@
 }
 
 mat-icon {
-    transform: scale(1.5);
+    transform: scale(1.8);
 }

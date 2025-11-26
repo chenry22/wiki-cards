@@ -25,7 +25,10 @@ export class PackPage {
 
   swipeLocked = false;
   currIndex = 0;
+  startX = 0;
   currentX = 0;
+  rotationX = 0;
+  dragging = false;
 
   async openPack() {
     this.pages = [];
@@ -59,14 +62,43 @@ export class PackPage {
     if (this.swipeLocked) return;
     this.swipeLocked = true;
 
-    // Animate card off-screen
-    this.currentX = direction === 'right' ? 1000 : -1000;
+    var movement = 140
+    var rotate = 4
+    this.currentX = direction === 'right' ? -movement : movement;
+    this.rotationX = direction === 'right' ? -rotate : rotate;
 
     setTimeout(() => {
       this.currIndex += direction === 'left' ? -1 : 1;
       this.currentX = 0;
+      this.rotationX = 0;
       this.swipeLocked = false;
     }, 250);
+  }
+
+  onPointerDown(event: PointerEvent) {
+    if (this.swipeLocked) return;
+
+    this.dragging = true;
+    this.startX = event.clientX;
+    this.currentX = 0;
+
+    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+  }
+  onPointerMove(event: PointerEvent) {
+    if (!this.dragging) { return; }
+    this.currentX = Math.max(Math.min(event.clientX - this.startX, 200), -200);
+  }
+  onPointerUp(event: PointerEvent) {
+    if (!this.dragging || this.swipeLocked) return;
+
+    this.dragging = false;
+    const distance = this.currentX;
+
+    if (Math.abs(distance) > 120) {
+      this.commitSwipe(distance < 0 ? 'right' : 'left');
+    } else {
+      this.currentX = 0;
+    }
   }
 
 
@@ -152,7 +184,7 @@ export class PackPage {
         action: 'query',
         format: 'json',
         prop: 'extracts',
-        exsentences: '5',
+        exsentences: '8',
         exlimit: '1',
         titles: pages[i].title, // String(r[3][0]).split("/")[String(r[3][0]).split("/").length - 1],
         explaintext: '1',
@@ -160,7 +192,7 @@ export class PackPage {
       }
       url = "https://en.wikipedia.org/w/api.php?origin=*&" + new URLSearchParams(params2).toString()
       var rev = await (await fetch(url)).json();
-      var maxLen = 400
+      var maxLen = 600
       if (rev.query.pages[0].extract) {
         if (String(rev.query.pages[0].extract).length > maxLen) {
           pages[i].desc = String(rev.query.pages[0].extract).substring(0, maxLen - 3) + "..."

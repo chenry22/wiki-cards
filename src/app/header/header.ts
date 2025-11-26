@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Firebase } from '../firebase';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -14,10 +14,12 @@ import { RouterLink } from '@angular/router';
 })
 export class Header {
   firebase = inject(Firebase);
+  router = inject(Router);
 
   signOut() {
     if (confirm("Are you sure you want to sign out?")) {
       this.firebase.signOut();
+      this.router.navigateByUrl("/sign_in");
     }
   }
 }

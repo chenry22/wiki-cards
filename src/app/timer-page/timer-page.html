@@ -5,29 +5,29 @@
         </div>
         <div class="timer-controls">
             <div class="change-time">
-                <button matIconButton id="timer-increment" 
+                <button matIconButton [disabled]="timerActive" id="timer-increment" 
                     (click)="incrementTimer()" aria-label="Add 5 minutes">
                     <mat-icon>arrow_drop_up</mat-icon>
                 </button>
-                <button matIconButton id="timer-decrement" 
+                <button matIconButton [disabled]="timerActive" id="timer-decrement" 
                     (click)="decrementTimer()" aria-label="Subtract 5 minutes">
                     <mat-icon>arrow_drop_down</mat-icon>
                 </button>
             </div>
-            <button matIconButton id="timer-begin" 
+            <button matIconButton [disabled]="timerActive && !paused" id="timer-begin" 
                 (click)="beginTimer()" aria-label="Begin timer">
                 <mat-icon>play_arrow</mat-icon>
             </button>
-            <button matIconButton id="timer-pause" 
+            <button matIconButton [disabled]="!timerActive || paused" id="timer-pause" 
                 (click)="pauseTimer()" aria-label="Pause timer">
                 <mat-icon>pause</mat-icon>
             </button>
-            <button matIconButton id="timer-stop" 
+            <button matIconButton [disabled]="!timerActive" id="timer-stop" 
                 (click)="stopTimer()" aria-label="Stop timer">
                 <mat-icon>stop</mat-icon>
             </button>
         </div>
     </div>
 
-    <
+    <span>Reward: {{ cardReward }} cards</span>
 </div>

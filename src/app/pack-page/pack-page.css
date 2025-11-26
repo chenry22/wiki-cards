@@ -3,7 +3,7 @@
     overflow-y: hidden;
     display: flex;
     justify-content: center;
-    background-color: rgb(106, 106, 133);
+    background-color: rgb(182, 182, 211);
 }
 
 .pack-view {
@@ -35,10 +35,11 @@
     display: flex;
     align-items: center;
     gap: 80px;
-
+    max-width: 90vw;
 }
 
 .card {
+    z-index: 0;
     flex-shrink: 0;
 
     width: 400px;
@@ -55,17 +56,21 @@
     align-items: center;
     box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
 
-    transition: transform 0.25s cubic-bezier(.22,.61,.36,1); /* smooth */
+    transition: transform 0.25s cubic-bezier(.22,.61,.36,1), rotate 0.25s cubic-bezier(.22,.61,.36,1); /* smooth */
     touch-action: none;
     will-change: transform;
 }
 
 .card img {
     max-height: 250px;
-    max-width: 90%;
+    max-width: 80%;
     object-fit: cover;
     margin: 20px auto;
     border-radius: 2px;
+}
+
+.card-button {
+    z-index: 1;
 }
 
 .common {
@@ -86,6 +91,17 @@
 
 mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+
+mat-card-content {
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
+mat-spinner {
+    color: white;
+    font-size: 40px;
+    margin: 0 auto;
 }
 
 .claim-button {

@@ -16,17 +16,21 @@ export class TimerPage {
   private maxTime = 2 * 60 * 60;
 
   private timeRemaining = signal(30 * 60);
-  private timerInit = signal(30 * 60 )
+  private timerInit = signal(30 * 60)
   private timerId: number | null = null;
 
-  private timerActive = false;
-  private packAvailable = false;
-
-  constructor(firebase: Firebase, router: Router) {
-    if (firebase.username === "") {
-      router.navigateByUrl("/");
+  private cardTimeRewardRate = 60 * 10;
+  get cardReward() {
+    if (this.timerActive) {
+      return Math.max(1, Math.floor(this.timerInit() / this.cardTimeRewardRate));
+    } else {
+      return Math.max(1, Math.floor(this.timeRemaining() / this.cardTimeRewardRate));
     }
-  }
+  };
+  
+  timerActive = false;
+  paused = false;
+  private packAvailable = false;
 
   formatTime(seconds: number) {
     if (seconds > 60) {
@@ -51,8 +55,9 @@ export class TimerPage {
   }
 
   beginTimer() {
-    if (!this.timerActive) {
+    if (!this.timerActive || this.paused) {
       this.timerActive = true;
+      this.paused = false;
       if (this.timerId == null) {
         // means we're starting a whole new timer
         // otherwise we have a previous valid timer that was paused, so just continue that
@@ -70,7 +75,9 @@ export class TimerPage {
     }
   }
   pauseTimer() {
-    this.timerActive = false;
+    if (!this.timerActive) { return; }
+
+    this.paused = true;
     if (this.timerId) {
       clearInterval(this.timerId);
     }
