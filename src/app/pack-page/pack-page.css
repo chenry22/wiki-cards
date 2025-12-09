@@ -3,19 +3,70 @@
     overflow-y: hidden;
     display: flex;
     justify-content: center;
-    background-color: rgb(182, 182, 211);
 }
 
-.pack-view {
+.sealed-view {
+    margin-top: 20px;
+    text-align: center;
+}
+.sealed-view:hover {
+    cursor: pointer;
+}
+
+@keyframes image-oscillate {
+    from { 
+        transform: scale(1); 
+        background-color: rgba(255, 230, 0, 0.3);
+    }
+    to { 
+        transform: scale(1.1); 
+        background-color: rgba(255, 0, 230, 0.3);
+    }
+}
+@keyframes rotate {
+    from { transform: rotate(-1deg); }
+    to { transform: rotate(1deg); }
+}
+.image-group {
+    max-height: 60vh;
+    max-width: 60vw;
+    position: relative;
+}
+.image-group .bg {
+    position: absolute;
+    margin: 0 auto;
+
+    filter: blur(16px);
+    border-radius: 32px;
+    width: 100%;
+    height: 100%;
+    animation: image-oscillate 3s ease-in-out infinite alternate-reverse;
+}
+.pack-image {
+    max-width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    position: relative;
+    animation: rotate 2s ease-in-out infinite alternate-reverse;
+}
+
+.open-button {
+    z-index: 2;
+    width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: white;
+    border: 2px solid black;
     font-weight: bold;
     padding: 20px;
-    margin: 20px;
+    margin: 20px auto;
     border-radius: 4px;
     height: 40px;
+}
+.open-button:hover {
+    cursor: pointer;
+    background-color: aliceblue;
 }
 
 .reveal-view {
@@ -80,7 +131,7 @@
     border: 4px solid rgb(8, 125, 8);
 }
 .rare {
-    border: 4px solid rgb(42, 42, 160);
+    border: 4px solid rgb(52, 99, 209);
 }
 .epic {
     border: 4px solid rgb(164, 11, 164);
@@ -91,6 +142,7 @@
 
 mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-size: 24px;
 }
 
 mat-card-content {
@@ -104,8 +156,42 @@ mat-spinner {
     margin: 0 auto;
 }
 
+.summary-button {
+    width: fit-content;
+    margin: 0 auto 40px;
+    padding: 8px 20px; 
+}
+
+.summary-view {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 20px;
+    padding: 10px 6vw;
+    overflow: auto;
+
+}
+.summary-view mat-card {
+    width: 240px;
+    height: 300px;
+    padding: 10px 14px;
+}
+
+.summary-view img {
+    max-height: 50%;
+}
+
+.summary-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    gap: 20px;
+    align-items: center;
+}
+
 .claim-button {
-    width: 100px;
-    margin: 0 auto;
-    padding: 4px; 
+    width: fit-content;
+    padding: 10px 18px;
 }

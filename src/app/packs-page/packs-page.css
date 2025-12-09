@@ -1,0 +1,39 @@
+.content {
+    padding: 40px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pack-scroll {
+    width: 100vw;
+    padding: 0 32vw;
+    overflow: auto hidden;
+
+    scroll-snap-type: x mandatory;
+    display: flex;
+    gap: 48px;
+}
+.pack-scroll::-webkit-scrollbar {
+    display: none;
+}
+.pack {
+    padding: 0 20px;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    transition: transform 0.4s ease-in-out;
+}
+.pack:hover {
+    transform: translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.8);
+    opacity: 1.0;
+    cursor: pointer;
+}
+.pack img {
+    width: 32vw;
+}

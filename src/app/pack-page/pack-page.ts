@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Firebase } from '../firebase';
 
 enum PackState {
   Sealed,
@@ -16,12 +18,17 @@ enum PackState {
   templateUrl: './pack-page.html',
   styleUrl: './pack-page.css',
 })
-export class PackPage {
+export class PackPage  {
+  firebase = inject(Firebase);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   public pages: any[] = []; // cards
 
   PackState = PackState;
   state: PackState = PackState.Sealed;
-  packSize = 6;
+  packSize = 0;
+  packID = '';
 
   swipeLocked = false;
   currIndex = 0;
@@ -29,6 +36,31 @@ export class PackPage {
   currentX = 0;
   rotationX = 0;
   dragging = false;
+
+  wheelAccum = 0;
+  wheelLocked = false;
+
+  WHEEL_THRESHOLD = 80;
+  WHEEL_COOLDOWN = 400;
+
+  constructor() {
+    // Access route parameters
+    this.route.params.subscribe(params => {
+      this.packID = params['pack_id'] || '';
+      this.loadPack();
+    });
+  }
+
+  private reloadEffect = effect(() => {
+    // when username signal updates, this will re-check the pack
+    this.loadPack();
+  });
+
+  async loadPack() {
+    if (this.firebase.username() != null) {
+      this.packSize = await this.firebase.loadPackSize(this.packID);
+    }
+  }
 
   async openPack() {
     this.pages = [];
@@ -50,12 +82,21 @@ export class PackPage {
       }
 
       var page = await this.getRandomWikiPages(1, rarity);
+      page[0].rarity = rarity;
       this.pages.push(page[0]);
     }
+
+    // once pack is fully open, send data to firebase
+    this.firebase.openPack(this.packID, this.pages);
+  }
+
+  showSummary() {
+    this.state = PackState.Summary;
   }
 
   async claimPack() {
-    // send signal to firebase with cards
+    // go back to timer? basically just any cleanup and finish
+    this.router.navigateByUrl('');
   }
 
   commitSwipe(direction: 'left' | 'right') {
@@ -121,11 +162,11 @@ export class PackPage {
         break;
       case "epic":
         minsize = "20000"
-        maxsize = "100000"
+        maxsize = "800000"
         break;
       case "legendary":
-        minsize = "100000"
-        maxsize= "10000000"
+        minsize = "800000"
+        maxsize= "100000000"
         break;
       default:
         return []; // invalid, don't load
@@ -175,7 +216,7 @@ export class PackPage {
       if (rev.query.pages[0] && rev.query.pages[0].thumbnail) {
         pages[i].thumbnail = rev.query.pages[0].thumbnail.source
       } else {
-        pages[i].thumbnail = '';
+        pages[i].thumbnail = 'default-card.png';
       }
 
 

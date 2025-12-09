@@ -5,18 +5,18 @@
 .title a {
     font-size: larger;
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
-    color: white;
+    color: black;
     font-variant: small-caps;
     text-decoration: none;
 }
 
 mat-toolbar {
     height: 50px;
-    background-color: rgb(7, 7, 61);
-    color: white;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 mat-icon {
-    color: white;
+    color: black;
 }
 
 .menu-item {

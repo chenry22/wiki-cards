@@ -3,10 +3,9 @@
 #content {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
     height: calc(100vh - 50px);
 }
 
@@ -15,23 +14,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 40px;
     gap: 20px;
 
     padding: 40px;
-    background-color: rgb(169, 165, 221);
-    border-radius: 20px;
+    background-color: rgb(7, 8, 10);
+    border-radius: 36px;
 }
 
 #time {
     font-family: "Quantico", sans-serif;
-    padding: 80px;
+    padding: 80px 60px;
     width: 200px;
     text-align: center;
     background-color: white;
     font-size: 3.5em;
     letter-spacing: 0.1em;
-    border-radius: 40px;
+    border-radius: 14px;
 }
 
 .timer-controls {
@@ -49,5 +47,10 @@
 }
 
 mat-icon {
+    color: white;
     transform: scale(1.8);
+}
+
+.goal-input {
+    width: 60%;
 }

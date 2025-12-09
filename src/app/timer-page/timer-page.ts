@@ -1,16 +1,18 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { Firebase } from '../firebase';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-timer-page',
-  imports: [MatIconModule, MatButtonModule],
+  imports: [MatIconModule, MatButtonModule, MatInputModule],
   templateUrl: './timer-page.html',
   styleUrl: './timer-page.css',
 })
 export class TimerPage {
+  firebase = inject(Firebase);
+  
   private increment = 5 * 60;
   private minTime = 5 * 60;
   private maxTime = 2 * 60 * 60;
@@ -31,6 +33,19 @@ export class TimerPage {
   timerActive = false;
   paused = false;
   private packAvailable = false;
+
+  isPackAvailable() {
+    return this.packAvailable; //this.packAvailable;
+  }
+
+  async claimPack() {
+    // create new doc in firebase users/packs
+    if (this.isPackAvailable() && await this.firebase.createPack(this.cardReward)) {
+      alert("Pack redeemed!");
+      this.packAvailable = false;
+      this.timerActive = false;
+    }
+  }
 
   formatTime(seconds: number) {
     if (seconds > 60) {
@@ -55,6 +70,7 @@ export class TimerPage {
   }
 
   beginTimer() {
+    if (this.packAvailable) { return; }
     if (!this.timerActive || this.paused) {
       this.timerActive = true;
       this.paused = false;
@@ -63,15 +79,18 @@ export class TimerPage {
         // otherwise we have a previous valid timer that was paused, so just continue that
         this.timerInit.set(this.timeRemaining());
       }
-      this.timerId = setInterval(() => {
+      var timerID = setInterval(() => {
         this.timeRemaining.update((time) => {
           if (time <= 1) {
-            this.stopTimer(true);
+            clearInterval(timerID);
+            this.timerId = null;
+            this.packAvailable = true;
             return 0;
           }
           return time - 1;
         });
       }, 1000);
+      this.timerId = timerID;
     }
   }
   pauseTimer() {

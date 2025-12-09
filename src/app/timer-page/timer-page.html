@@ -29,5 +29,15 @@
         </div>
     </div>
 
-    <span>Reward: {{ cardReward }} cards</span>
+    <p>Write a goal for this session!</p>
+    <mat-form-field class="goal-input">
+        <mat-label>My goal</mat-label>
+        <input matInput>
+    </mat-form-field>
+
+    @if (isPackAvailable()) {
+        <button (click)="claimPack()" matButton="filled">Claim Pack</button>
+    }
+
+    <span><i>Reward: {{ cardReward }} cards</i></span>
 </div>

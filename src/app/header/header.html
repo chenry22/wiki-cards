@@ -17,12 +17,12 @@
         <button matIconButton class="toolbar-icon" aria-label="Person">
             <mat-icon>person</mat-icon>
         </button>
-        <span class="username">{{ firebase.username }}</span>
+        <span class="username">{{ firebase.username() ?? 'Not logged in' }}</span>
     </span>
 
     <mat-menu #profile="matMenu">
-        <button mat-menu-item>Collection</button>
-        @if (firebase.username === "") {
+        <a mat-menu-item routerLink="/collection">Collection</a>
+        @if (firebase.username() === null) {
             <a mat-menu-item routerLink="/sign_in">Sign In</a>
         } @else {
             <button mat-menu-item (click)="signOut()">Sign Out</button>

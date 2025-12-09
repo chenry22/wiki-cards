@@ -1,0 +1,27 @@
+<div class="content">
+    @if (firebase.username() === null) {
+        <div>
+            <p>Loading...</p>
+        </div>
+    } @else {
+        <div class="pack-scroll">
+            @for (pack of packs; track pack.id) {
+                <div (click)="redeemPack(pack.id)" class="pack">
+                    <img src="card-pack.png"/>
+                    <p>{{ pack.cards }} cards</p>
+                    <p><i>Created {{ pack.created}}</i></p>
+                </div>
+            } @empty {
+                @if (loading) {
+                    <div>
+                        <p>Loading...</p>
+                    </div>
+                } @else {
+                    <div>
+                        <p>[ No packs ]</p>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
