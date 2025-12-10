@@ -1,7 +1,7 @@
 <div id="content">
-    @if (firebase.username() === null) {
+    @if (firebase.username() === null || packSize < 0) {
         <p>Loading...</p>
-    } @else if (packSize <= 0) {
+    } @else if (packSize == 0) {
         <p>The pack you are trying to open has been redeemed or does not exist.</p>
     } @else if (state === PackState.Sealed) {
         <div class="sealed-view" (click)="openPack()">

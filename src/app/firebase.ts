@@ -62,7 +62,11 @@ export class Firebase {
       return [];
     }
 
-    var snapshot = await getDocs(collection(this.firestore, "users", username, "packs"));
+    // var snapshot = await getDocs(collection(this.firestore, "users", username, "packs"));
+    var q = query(collection(this.firestore, "users", username, "packs"), 
+        orderBy("created", 'desc'), limit(10)
+    );
+    var snapshot = await getDocs(q);
     return snapshot.docs;
   }
 

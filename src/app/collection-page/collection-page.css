@@ -12,12 +12,17 @@ h1 {
     margin: 20px;
     gap: 20px;
     align-items: center;
+    justify-content: center;
 }
 
+.cards a {
+    color: black;
+    text-decoration: none;
+}
 .cards mat-card {
-    width: 240px;
+    width: 200px;
     height: 300px;
-    padding: 10px 14px;
+    padding: 20px 24px;
     position: relative;
     
     display: flex;
@@ -26,14 +31,27 @@ h1 {
     align-items: center;
     box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
+
+    transition: transform .3s ease-in-out;
+}
+
+.cards mat-card:hover {
+    transform: translate(3px, -3px);
+    cursor: pointer;
 }
 
 .cards mat-card img {
     max-height: 50%;
     max-width: 80%;
-    object-fit: cover;
+    object-fit: contain;
     margin: 14px auto;
     border-radius: 2px;
+}
+
+.cards mat-card-subtitle {
+    font-weight: normal;
+    font-size: small;
+    font-style: italic;
 }
 
 .common {

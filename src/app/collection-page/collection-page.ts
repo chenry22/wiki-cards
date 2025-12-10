@@ -45,7 +45,8 @@ export class CollectionPage {
           rarity: r,
           title: data['title'],
           link: data['link'],
-          thumbnail: data['thumbnail']
+          thumbnail: data['thumbnail'],
+          created: data['created'].toDate()
         });
       });
       console.log(this.cards);

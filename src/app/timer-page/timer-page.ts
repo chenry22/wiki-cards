@@ -40,10 +40,16 @@ export class TimerPage {
 
   async claimPack() {
     // create new doc in firebase users/packs
-    if (this.isPackAvailable() && await this.firebase.createPack(this.cardReward)) {
-      alert("Pack redeemed!");
+    if (this.isPackAvailable()) {
       this.packAvailable = false;
-      this.timerActive = false;
+      if (await this.firebase.createPack(this.cardReward)){
+        alert("Pack redeemed!");
+        this.timerActive = false;
+      } else {
+        alert("Failed to redeem pack. Please try again.");
+        this.packAvailable = true;
+      }
+      this.packAvailable = false;
     }
   }
 

@@ -3,11 +3,13 @@
     <mat-divider></mat-divider>
     <div class="cards">
         @for (card of cards; track card.id) {
-            <mat-card [attr.id]="card.id" [attr.class]="card.rarity">
-                <mat-card-title>{{ card.title }}</mat-card-title>
-                <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
-                <mat-card-subtitle><a target="_blank" [href]="card.link">Wiki Link</a></mat-card-subtitle>
-            </mat-card>
+            <a target="_blank" [href]="card.link">
+                <mat-card [attr.id]="card.id" [attr.class]="card.rarity">
+                    <mat-card-title>{{ card.title }}</mat-card-title>
+                    <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                    <mat-card-subtitle>{{ card.created }}</mat-card-subtitle>
+                </mat-card>
+            </a>
         } @empty {
             <p>[ Empty ]</p>
         }

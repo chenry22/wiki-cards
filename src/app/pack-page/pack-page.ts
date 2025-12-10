@@ -27,7 +27,7 @@ export class PackPage  {
 
   PackState = PackState;
   state: PackState = PackState.Sealed;
-  packSize = 0;
+  packSize = -1;
   packID = '';
 
   swipeLocked = false;
