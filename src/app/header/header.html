@@ -9,6 +9,9 @@
     <mat-menu #menu="matMenu">
         <a mat-menu-item routerLink="/">Timer</a>
         <a mat-menu-item routerLink="/packs">Packs</a>
+        @if (firebase.username() !== null) {
+            <button mat-menu-item (click)="firebase.claimDailyPack()">Claim Daily Pack</button>
+        }
     </mat-menu>
 
     <span class="title"><a routerLink="/">WikiCards</a></span>

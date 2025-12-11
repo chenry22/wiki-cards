@@ -37,6 +37,7 @@ export class PacksPage implements OnInit {
         };
       });
     }
+    this.loading = false;
   }
 
   redeemPack(id: string) {

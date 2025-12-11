@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, startAfter, writeBatch } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, onAuthStateChanged, signInAnonymously, signOut, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 
@@ -117,9 +117,12 @@ export class Firebase {
         r = 4;
       }
 
-      batch.set(doc(this.firestore, "users", username, "cards", packID + i), 
+      batch.set(doc(this.firestore, "cards", packID + i), 
         { 
           id: cards[i].id,
+          username: username,
+          starred: false,
+
           title: cards[i].title,
           thumbnail: cards[i].thumbnail,
           link: cards[i].link,
@@ -142,16 +145,106 @@ export class Firebase {
       return [];
     }
     
-    var q = query(collection(this.firestore, "users", username, "cards"), 
-        orderBy("created"), limit(lim)
+    var q = query(collection(this.firestore, "cards"), 
+      where('username', '==', username),
+      orderBy("rarity", 'desc'), limit(lim)
     );
     if (lastDoc) {
-      q = query(collection(this.firestore, "users", username, "cards"), 
-        orderBy("created"), limit(lim), startAfter(lastDoc)
+      q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username),
+        orderBy("rarity", 'desc'), limit(lim), 
+        startAfter(lastDoc)
       );
     }
 
     var snapshot = await getDocs(q);
     return snapshot.docs;
+  }
+  async loadCollectionByDate(lastDoc: DocumentSnapshot | null, lim: number = 5) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return [];
+    }
+    
+    var q = query(collection(this.firestore, "cards"), 
+      where('username', '==', username),
+      orderBy("created", 'desc'), limit(lim)
+    );
+    if (lastDoc) {
+      q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username),
+        orderBy("created", 'desc'), limit(lim), 
+        startAfter(lastDoc)
+      );
+    }
+
+    var snapshot = await getDocs(q);
+    return snapshot.docs;
+  }
+  async loadCollectionByStar(lastDoc: DocumentSnapshot | null, lim: number = 5) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return [];
+    }
+    
+    var q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username),
+        orderBy("starred", 'desc'), orderBy("created", 'desc'), limit(lim)
+    );
+    if (lastDoc) {
+      q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username),
+        orderBy("starred", 'desc'), orderBy("created", 'desc'), limit(lim), 
+        startAfter(lastDoc)
+      );
+    }
+
+    var snapshot = await getDocs(q);
+    return snapshot.docs;
+  }
+
+  async starCard(id: string) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return;
+    }
+    await updateDoc(doc(this.firestore, "cards", id), "starred", true);
+  }
+  async unstarCard(id: string) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return;
+    }
+    await updateDoc(doc(this.firestore, "cards", id), "starred", false);
+  }
+
+  async claimDailyPack() {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return;
+    }
+
+    var snapshot = await getDoc(doc(this.firestore, "users", username));
+    var data = snapshot.data();
+    if (data === undefined) {
+      console.log("Failed to parse user data");
+      return;
+    }
+
+    var lastClaim = data['lastClaim'];
+    console.log(lastClaim?.toDate().getTime());
+    console.log(Date.now() - 24 * 60 * 60);
+    if (lastClaim === undefined || lastClaim.toDate().getTime() < (Date.now() - 24 * 60 * 60)) {
+      await this.createPack(5);
+      await updateDoc(doc(this.firestore, "users", username), "lastClaim", new Date());
+      alert("Daily pack claimed!");
+    } else {
+      alert("You already claimed your daily pack!");
+    }
   }
 }

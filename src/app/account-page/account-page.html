@@ -5,5 +5,7 @@
             <input id="username" type="text" placeholder="Username" [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
         </label>
     </form>
-    <button (click)="login()">Submit</button>
+    @if (!loading) {
+        <button (click)="login()">Submit</button>
+    }
 </div>

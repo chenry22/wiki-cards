@@ -1,7 +1,11 @@
 <div class="content">
-    @if (firebase.username() === null) {
+    @if (firebase.username() === null && loading) {
         <div>
             <p>Loading...</p>
+        </div>
+    } @else if (firebase.username() == null && !loading) {
+        <div>
+            <p>[ Not logged in ]</p>
         </div>
     } @else {
         <div class="pack-scroll">

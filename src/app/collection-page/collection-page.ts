@@ -3,10 +3,13 @@ import { Firebase } from '../firebase';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-collection-page',
-  imports: [MatCardModule, MatDividerModule],
+  imports: [MatCardModule, MatDividerModule, MatButtonToggleModule, MatButtonModule, MatIconModule],
   templateUrl: './collection-page.html',
   styleUrl: './collection-page.css',
 })
@@ -14,16 +17,32 @@ export class CollectionPage {
   firebase = inject(Firebase);
   cards: any[] = [];
 
+  loading = true;
   lastDoc: DocumentSnapshot | null = null;
+  selectedSort = "Star";
+
+  moreCards = true;
+  private loadLimit = 20;
 
   private reloadEffect = effect(() => {
     // when username signal updates, this will reload packs for the found user
+    this.cards = [];
+    this.lastDoc = null;
     this.loadCards();
   });
 
   async loadCards() {
+    this.loading = true;
     if (this.firebase.username() != null) {
-      var docs = await this.firebase.loadCollection(this.lastDoc, 10);
+      var docs;
+      if (this.selectedSort === "Rarity") {
+        docs = await this.firebase.loadCollection(this.lastDoc, this.loadLimit);
+      } else if (this.selectedSort === "Date") {
+        docs = await this.firebase.loadCollectionByDate(this.lastDoc, this.loadLimit);
+      } else {
+        docs = await this.firebase.loadCollectionByStar(this.lastDoc, this.loadLimit);
+      }
+      this.moreCards = docs.length >= this.loadLimit;
       this.lastDoc = docs[docs.length - 1];
 
       docs.forEach((card) => {
@@ -46,10 +65,27 @@ export class CollectionPage {
           title: data['title'],
           link: data['link'],
           thumbnail: data['thumbnail'],
-          created: data['created'].toDate()
+          created: data['created'].toDate().toDateString(),
+          starred: data['starred']
         });
       });
-      console.log(this.cards);
+      this.loading = false;
     }
+  }
+
+  async changeSort(v: string ) {
+    this.selectedSort = v;
+    this.cards = [];
+    this.lastDoc = null;
+    this.loadCards();
+  }
+
+  async starCard(card: any) {
+    card.starred = true;
+    this.firebase.starCard(card.id);
+  }
+  async unstarCard(card: any) {
+    card.starred = false;
+    this.firebase.unstarCard(card.id);
   }
 }

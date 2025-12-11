@@ -20,6 +20,8 @@ export class AccountPage {
   firebase = inject(Firebase);
   nav = inject(Router);
 
+  loading = false;
+
   constructor () {
     onAuthStateChanged(this.firebase.auth, (user) => {
       if (user) {
@@ -30,9 +32,11 @@ export class AccountPage {
   }
 
   async login() {
+    this.loading = true;
     this.username = this.username.toLowerCase();
     if (this.username !== "" && await this.firebase.signIn(this.username)) {
       this.nav.navigateByUrl("");
     }
+    this.loading = false;
   }
 }

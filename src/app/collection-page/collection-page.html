@@ -1,17 +1,36 @@
-<div class="content">
-    <h1>My Collection</h1>
-    <mat-divider></mat-divider>
-    <div class="cards">
-        @for (card of cards; track card.id) {
-            <a target="_blank" [href]="card.link">
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h1>My Collection</h1>
+            <mat-button-toggle-group name="sortOrder" aria-label="Sort Order" [value]="selectedSort" (change)="changeSort($event.value)">
+                <mat-button-toggle value="Rarity">Rarity</mat-button-toggle>
+                <mat-button-toggle value="Date">Date</mat-button-toggle>
+                <mat-button-toggle value="Star">Starred</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="cards">
+            @for (card of cards; track card.id) {
                 <mat-card [attr.id]="card.id" [attr.class]="card.rarity">
-                    <mat-card-title>{{ card.title }}</mat-card-title>
-                    <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
-                    <mat-card-subtitle>{{ card.created }}</mat-card-subtitle>
+                    <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card) : starCard(card)">
+                        <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
+                    </button>
+                    <a target="_blank" [href]="card.link">
+                        <mat-card-title>{{ card.title }}</mat-card-title>
+                        <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                        <mat-card-subtitle>[ Collected {{ card.created }} ]</mat-card-subtitle>
+                    </a>
                 </mat-card>
-            </a>
-        } @empty {
-            <p>[ Empty ]</p>
+            } @empty {
+                @if (loading) {
+                    <p>Loading...</p>
+                } @else {
+                    <p>[ Empty ]</p>
+                }
+            }
+        </div>
+        @if (moreCards) {
+            <button class="load-button" matButton="filled" (click)="loadCards()">Load More</button>
         }
     </div>
 </div>
