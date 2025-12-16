@@ -80,6 +80,7 @@ export class PackPage  {
       } else {
         rarity = "legendary"
       }
+     
 
       var page = await this.getRandomWikiPages(1, rarity);
       page[0].rarity = rarity;
@@ -107,6 +108,8 @@ export class PackPage  {
     var rotate = 4
     this.currentX = direction === 'right' ? -movement : movement;
     this.rotationX = direction === 'right' ? -rotate : rotate;
+
+    document.getElementById('card-content')?.scrollTo({ top: 0, behavior: 'smooth' });
 
     setTimeout(() => {
       this.currIndex += direction === 'left' ? -1 : 1;
@@ -162,10 +165,10 @@ export class PackPage  {
         break;
       case "epic":
         minsize = "20000"
-        maxsize = "800000"
+        maxsize = "100000"
         break;
       case "legendary":
-        minsize = "800000"
+        minsize = "100000"
         maxsize= "100000000"
         break;
       default:

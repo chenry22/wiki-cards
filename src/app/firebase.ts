@@ -237,14 +237,15 @@ export class Firebase {
     }
 
     var lastClaim = data['lastClaim'];
-    console.log(lastClaim?.toDate().getTime());
-    console.log(Date.now() - 24 * 60 * 60);
-    if (lastClaim === undefined || lastClaim.toDate().getTime() < (Date.now() - 24 * 60 * 60)) {
+    var check = new Date();
+    check.setTime(Date.now() - 24 * 60 * 60 * 1000);
+
+    if (lastClaim === undefined || lastClaim.toDate() <= check) {
       await this.createPack(5);
       await updateDoc(doc(this.firestore, "users", username), "lastClaim", new Date());
       alert("Daily pack claimed!");
     } else {
-      alert("You already claimed your daily pack!");
+      alert("You already claimed your daily pack today!");
     }
   }
 }

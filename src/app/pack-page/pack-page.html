@@ -38,7 +38,7 @@
                         >
                             <mat-card-title>{{ pages[currIndex].title }}</mat-card-title>
                             <img mat-card-image src="{{ pages[currIndex].thumbnail }}" alt="{{ pages[currIndex].title }}"/>
-                            <mat-card-content>
+                            <mat-card-content id="card-content">
                                 @for (d of pages[currIndex].desc.split('=='); track $index; let idx = $index) {
                                     @if (idx % 2 == 0) {
                                         <span>{{ d }}</span>

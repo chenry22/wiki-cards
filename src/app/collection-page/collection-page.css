@@ -36,6 +36,7 @@ h1 {
     height: 300px;
     padding: 20px 24px;
     position: relative;
+    overflow: hidden;
     
     display: flex;
     flex-direction: column;
@@ -58,8 +59,8 @@ h1 {
 }
 
 .cards mat-card img {
-    max-height: 50%;
-    max-width: 80%;
+    max-height: 200px;
+    max-width: 90%;
     object-fit: contain;
     margin: 14px auto;
     border-radius: 2px;
