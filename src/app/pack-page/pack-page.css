@@ -51,7 +51,7 @@
 }
 
 .open-button {
-    z-index: 2;
+    z-index: 3;
     width: fit-content;
     display: flex;
     justify-content: center;
@@ -194,4 +194,10 @@ mat-spinner {
 .claim-button {
     width: fit-content;
     padding: 10px 18px;
+}
+
+.star-button {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

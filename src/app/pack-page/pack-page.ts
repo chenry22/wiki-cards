@@ -91,6 +91,15 @@ export class PackPage  {
     this.firebase.openPack(this.packID, this.pages);
   }
 
+  async starCard() {
+    this.pages[this.currIndex].starred = true;
+    this.firebase.starCard(this.packID + this.currIndex);
+  }
+  async unstarCard() {
+    this.pages[this.currIndex].starred = false;
+    this.firebase.unstarCard(this.packID + this.currIndex);
+  }
+
   showSummary() {
     this.state = PackState.Summary;
   }

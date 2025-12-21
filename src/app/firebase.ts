@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
-import { Auth, onAuthStateChanged, signInAnonymously, signOut, user } from '@angular/fire/auth'
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -17,29 +17,42 @@ export class Firebase {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         console.log("New user signed in!");
-        this.username.set(localStorage.getItem('username'));
-
-        var username = this.username();
-        if (username) {
-          var newUser = doc(this.firestore, "users", username);
-          setDoc(newUser, { lastLogin: new Date() }, { merge: true});
-        }
+        console.log(user);
+        this.username.set(user.displayName);
       } else {
         console.log("User signed out")
         this.username.set(null);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('sign_in');
       }
     });
   }
 
-  async signIn(username: string) {
-    localStorage.setItem('username', username);
-    await signInAnonymously(this.auth);
+  async signIn(email: string, password: string) {
+    await signInWithEmailAndPassword(this.auth, email, password);
+    return true;
+  }
+  async createAccount(username: string, email: string, password: string) { 
+    var check = await getDoc(doc(this.firestore, "users", username));
+    if (check.exists()) {
+      return false;
+    }
+
+    var userCred = await createUserWithEmailAndPassword(this.auth, email, password)
+    await updateProfile(userCred.user, { displayName: username });
+    this.username.set(username);
+    try {
+      await setDoc(doc(this.firestore, "users", username), 
+        { joined: new Date() }
+      )
+    } catch (e) {
+      console.log(e)
+      return false;
+    }
+
     return true;
   }
 
   async signOut() {
-    localStorage.removeItem('username');
     await signOut(this.auth);
   }
 

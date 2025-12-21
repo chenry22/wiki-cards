@@ -36,6 +36,10 @@
                             [style.rotate]="rotationX + 'deg'"
                             [attr.id]="pages[currIndex].id" [attr.class]="pages[currIndex].class"
                         >
+                            <button matIconButton class="star-button" (click)="pages[currIndex].starred ? unstarCard() : starCard()">
+                                <mat-icon>{{ pages[currIndex].starred ? 'star' : 'star_outline' }}</mat-icon>
+                            </button>
+
                             <mat-card-title>{{ pages[currIndex].title }}</mat-card-title>
                             <img mat-card-image src="{{ pages[currIndex].thumbnail }}" alt="{{ pages[currIndex].title }}"/>
                             <mat-card-content id="card-content">

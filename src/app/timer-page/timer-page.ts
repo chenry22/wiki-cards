@@ -15,18 +15,22 @@ export class TimerPage {
   
   private increment = 5 * 60;
   private minTime = 5 * 60;
-  private maxTime = 2 * 60 * 60;
+  private maxTime = 120 * 60;
 
   private timeRemaining = signal(30 * 60);
   private timerInit = signal(30 * 60)
   private timerId: number | null = null;
 
-  private cardTimeRewardRate = 60 * 10;
+  private cardTimeRewardRate = 60 * 12;
+  private cardMultRate = 60 * 120;
+  private maxCardMult = 1.8;
   get cardReward() {
     if (this.timerActive) {
-      return Math.max(1, Math.floor(this.timerInit() / this.cardTimeRewardRate));
+      var mult = Math.min(this.maxCardMult, 1 + this.timerInit() / this.cardMultRate);
+      return Math.max(1, Math.floor(this.timerInit() / this.cardTimeRewardRate * mult));
     } else {
-      return Math.max(1, Math.floor(this.timeRemaining() / this.cardTimeRewardRate));
+      var mult = Math.min(this.maxCardMult, 1 + this.timeRemaining() / this.cardMultRate);
+      return Math.max(1, Math.floor(this.timeRemaining() / this.cardTimeRewardRate * mult));
     }
   };
   

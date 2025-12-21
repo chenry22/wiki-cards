@@ -1,11 +1,41 @@
 <div class="main">
-    <form>
-        <label for="username">
-            Username: 
-            <input id="username" type="text" placeholder="Username" [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
-        </label>
-    </form>
-    @if (!loading) {
-        <button (click)="login()">Submit</button>
+    @if (signIn) {
+        <h1>Log In</h1>
+        <form>
+            <label for="email">
+                Email: 
+                <input id="email" type="text" placeholder="Email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"/>
+            </label>
+            <label for="password">
+                Password: 
+                <input id="password" type="password" placeholder="Password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"/>
+            </label>
+
+            @if (!loading) {
+                <button class="submit" (click)="login()">Log In</button>
+                <button (click)="swapView()">Switch to Create Account</button>
+            }
+        </form>
+    } @else {
+        <h1>Create Account</h1>
+        <form>
+            <label for="username">
+                Username: 
+                <input id="username" type="text" placeholder="Username" [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
+            </label>
+            <label for="email">
+                Email: 
+                <input id="email" type="text" placeholder="Email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"/>
+            </label>
+            <label for="password">
+                Password: 
+                <input id="password" type="password" placeholder="Password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"/>
+            </label>
+
+            @if (!loading) {
+                <button class="submit" (click)="signUp()">Create Account</button>
+                <button (click)="swapView()">Switch to Log In</button>
+            }
+        </form>
     }
 </div>
