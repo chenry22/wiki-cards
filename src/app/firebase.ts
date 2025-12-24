@@ -1,7 +1,9 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
+import { Profile } from './profile-page/profile-page';
+import { WikiCard } from './collection-page/collection-page';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +44,7 @@ export class Firebase {
     this.username.set(username);
     try {
       await setDoc(doc(this.firestore, "users", username), 
-        { joined: new Date() }
+        { joined: new Date(), balance: 0 }
       )
     } catch (e) {
       console.log(e)
@@ -102,6 +104,20 @@ export class Firebase {
     return Number(data['cards']);
   }
 
+  rarityStringToNumber(r: string) {
+    if (r === "common") {
+      return 0;
+    } else if (r === "uncommon") {
+      return 1;
+    } else if (r === "rare") {
+      return 2;
+    } else if (r === "epic") {
+      return 3;
+    } else {
+      return 4;
+    }
+  }
+
   async openPack(packID: string, cards: any[]) {
     if (packID === '') {
       console.log("Invalid packID");
@@ -117,18 +133,6 @@ export class Firebase {
 
     // add docs to user collection
     for(var i in cards) {
-      var r = cards[i].rarity;
-      if (r === "common") {
-        r = 0;
-      } else if (r === "uncommon") {
-        r = 1;
-      } else if (r === "rare") {
-        r = 2;
-      } else if (r === "epic") {
-        r = 3;
-      } else {
-        r = 4;
-      }
 
       batch.set(doc(this.firestore, "cards", packID + i), 
         { 
@@ -139,7 +143,7 @@ export class Firebase {
           title: cards[i].title,
           thumbnail: cards[i].thumbnail,
           link: cards[i].link,
-          rarity: Number(r),
+          rarity: this.rarityStringToNumber(cards[i].rarity),
           created: new Date(),
         }
       );
@@ -254,11 +258,136 @@ export class Firebase {
     check.setTime(Date.now() - 24 * 60 * 60 * 1000);
 
     if (lastClaim === undefined || lastClaim.toDate() <= check) {
-      await this.createPack(5);
+      await this.createPack(3);
       await updateDoc(doc(this.firestore, "users", username), "lastClaim", new Date());
       alert("Daily pack claimed!");
     } else {
-      alert("You already claimed your daily pack today!");
+      alert("You already claimed your daily pack today.");
     }
+  }
+  
+  async loadProfile(username: string) {
+    var data: Profile = {
+      username: username,
+      currentUser: username !== '' && this.username() === username,
+      pfp: null,
+      joined: new Date(),
+      featured: new Array<WikiCard>()
+    };
+
+    var profile = await getDoc(doc(this.firestore, "users", username));
+    var profileData = profile.data();
+    if (!profile.exists() || profileData === undefined) {
+      return null;
+    }
+
+    data.pfp = profileData['pfp'];
+    data.joined = profileData['joined'].toDate();
+
+    var featured = await getDocs(collection(this.firestore, 'users', username, 'featured'));
+    if (!featured.empty) {
+      data.featured = featured.docs.map((cardData) => {
+        var d = cardData.data();
+        var r = d['rarity'];
+        if (r == 0) {
+          r = "common"
+        } else if (r == 1) {
+          r = "uncommon";
+        } else if (r == 2) {
+          r = "rare";
+        } else if (r == 3) {
+          r = "epic"
+        } else if (r == 4) {
+          r = "legendary"
+        }
+        return {
+          id: cardData.id,
+          rarity: r,
+          wiki_id: d['id'],
+          title: d['title'],
+          link: d['link'],
+          thumbnail: d['thumbnail'],
+          created: d['created'],
+          starred: d['starred']
+        };
+      });
+    }
+    return data;
+  }
+
+  async sellCard(cardId: string, value: number) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return false;
+    }
+
+    const batch = writeBatch(this.firestore);
+    batch.update(doc(this.firestore, "users", username), 
+      { balance: increment(value) }
+    )
+    batch.delete(doc(this.firestore, "cards", cardId));
+    await batch.commit();
+    return true;
+  }
+
+  async setProfilePicture(url: string) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return;
+    }
+    await updateDoc(doc(this.firestore, 'users', username),
+      { pfp: url }
+    )
+  }
+
+  async setFeaturedCard(card: WikiCard) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return false;
+    }
+
+    // check if card already featured
+    var check = await getDoc(doc(this.firestore, 'users', username, 'featured', card.id));
+    if (check.exists()) {
+      alert("This card is already featured on your profile.");
+      return false;
+    }
+
+    // add or replace from featured
+    var cardData = {
+      id: card.id,
+      username: username,
+
+      title: card.title,
+      thumbnail: card.thumbnail,
+      link: card.link,
+      rarity: this.rarityStringToNumber(card.rarity),
+      created: card.created,
+    };
+
+    var currFeatured = await getCountFromServer(collection(this.firestore, 'users', username, 'featured'));    
+    if (currFeatured.data().count >= 5) {
+      var q = await query(collection(this.firestore, "users", username, "featured"),
+        where('num', '==', 5),
+      )
+      var snapshot = await getDocs(q);
+
+      const batch = writeBatch(this.firestore);
+      batch.delete(doc(this.firestore, "users", username, "featured", snapshot.docs[0].id));
+      batch.set(doc(this.firestore, "users", username, "featured", card.id),
+        cardData
+      );
+      await batch.commit();
+    } else {
+      await setDoc(doc(this.firestore, "users", username, "featured", card.id),
+        { ...cardData, num: currFeatured.data().count + 1 }
+      );
+    }
+
+    alert("Successfully added to featured cards!");
+    return true;
   }
 }

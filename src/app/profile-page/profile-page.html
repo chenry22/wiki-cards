@@ -1,0 +1,35 @@
+<div class="container">
+    @if (profile !== null) {
+        <div class="header">
+            <img class="pfp" [src]="profile.pfp ?? 'default-card.png'"/>
+            <div class="profile-info">
+                <h1>{{ profile.username }}</h1>
+                <h3>Member since {{ profile.joined.toDateString() }}</h3>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="featured">
+            <h2>Featured Cards ({{ profile.featured.length }} / 5)</h2>
+            <div class="card-container">
+                <div class="cards">
+                    @for (card of profile.featured; track card.id) {
+                        <mat-card [attr.id]="card.id" [attr.class]="card.rarity" (click)="showFullCard(card)">
+                            <mat-card-title>{{ card.title }}</mat-card-title>
+                            <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                            <mat-card-footer><i>[ Collected {{ card.created }} ]</i></mat-card-footer>
+                        </mat-card>
+                    } @empty {
+                        <p>[ None ]</p>
+                    }
+                </div>
+            </div>
+        </div>
+    } @else {
+        <p>[ This user does not exist ]</p>
+    }
+</div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="profile.currentUser" [(cards)]="profile.featured"></app-full-card>

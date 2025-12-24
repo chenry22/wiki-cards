@@ -1,0 +1,41 @@
+@if (shown()) {
+    <div class="overlay">
+        <div class="background" (click)="hideCard()"></div>
+        <mat-card [attr.class]="card()?.rarity">
+            <mat-card-title>{{ card()?.title }}</mat-card-title>
+            <mat-card-footer><i>Collected {{ card()?.created }}</i></mat-card-footer>
+            <img mat-card-image src="{{ card()?.thumbnail }}" alt="{{ card()?.title }}"/>
+            <mat-card-content>
+                {{ desc }}
+            </mat-card-content>
+            <mat-card-actions>
+                <a target="_blank" href="{{ card()?.link }}">Full Article ↗</a>
+            </mat-card-actions>
+            
+            @if (currUser()) {
+                <button class="menu-button" matIconButton [matMenuTriggerFor]="menu" aria-label="Card actions">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            }
+        </mat-card>
+    </div>
+
+    <mat-menu #menu="matMenu" xPosition="after">
+        <button mat-menu-item (click)="card()?.starred ? unstarCard() : starCard()">
+            <mat-icon>{{ card()?.starred ? 'star' : 'star_outline' }}</mat-icon>
+            <span>{{ card()?.starred ? 'Unstar' : 'Star' }}</span>
+        </button>
+        <button mat-menu-item (click)="setFeatured()">
+            <mat-icon>style</mat-icon>
+            <span>Add to featured</span>
+        </button>
+        <button mat-menu-item (click)="setProfilePicture()">
+            <mat-icon>account_circle</mat-icon>
+            <span>Set as profile picture</span>
+        </button>
+        <button mat-menu-item (click)="sellCard()">
+            <mat-icon>toll</mat-icon>
+            <span>Sell card ({{ cardSellValue() }})</span>
+        </button>
+    </mat-menu>
+}

@@ -162,14 +162,14 @@ export class PackPage  {
     switch(rarity) {
       case "common":
         minsize = "500"
-        maxsize = "1000"
+        maxsize = "2500"
         break;
       case "uncommon":
-        minsize = "1000"
-        maxsize = "5000"
+        minsize = "2500"
+        maxsize = "8000"
         break;
       case "rare":
-        minsize = "5000"
+        minsize = "8000"
         maxsize = "20000"
         break;
       case "epic":

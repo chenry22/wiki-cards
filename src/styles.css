@@ -5,5 +5,24 @@
 
 html, body { 
     height: 100%;
+    background-color: rgb(247, 247, 247);
 }
 body { margin: 0; }
+
+
+
+.common {
+    border: 4px solid rgb(142, 142, 142);
+}
+.uncommon {
+    border: 4px solid rgb(8, 125, 8);
+}
+.rare {
+    border: 4px solid rgb(52, 99, 209);
+}
+.epic {
+    border: 4px solid rgb(164, 11, 164);
+}
+.legendary {
+    border: 4px solid yellow;
+}

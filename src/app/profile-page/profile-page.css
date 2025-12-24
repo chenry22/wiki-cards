@@ -1,0 +1,75 @@
+.container {
+    margin: 30px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 90vw;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+.header h3 {
+    font-style: italic;
+    font-weight: normal;
+}
+.header img {
+    height: 20vh;
+    min-height: 100px;
+    aspect-ratio: 1;
+    border-radius: 100px;
+    object-fit: contain;
+
+    background-color: aliceblue;
+    border: 2px solid darkblue;
+}
+
+.divider {
+    height: 0px;
+    border: 1px solid rgba(99, 99, 99, 0.4);
+}
+
+.card-container {
+    margin-top: 10px;
+    overflow: auto hidden;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+    gap: 30px;
+    height: fit-content;
+}
+
+.cards mat-card {
+    box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 4px;
+    padding: 20px;
+    width: 260px;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+}
+.cards mat-card:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+    box-shadow: -5px 5px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cards mat-card img {
+    object-fit: contain;
+    max-width: 90%;
+}
+.cards mat-card-title {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}

@@ -11,15 +11,15 @@
         <mat-divider></mat-divider>
         <div class="cards">
             @for (card of cards; track card.id) {
-                <mat-card [attr.id]="card.id" [attr.class]="card.rarity">
-                    <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card) : starCard(card)">
+                <mat-card [attr.id]="card.id" [attr.class]="card.rarity" (click)="showFullCard(card)">
+                    <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
                         <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
                     </button>
-                    <a target="_blank" [href]="card.link">
+                    <div class="card-content">
                         <mat-card-title>{{ card.title }}</mat-card-title>
                         <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
                         <mat-card-subtitle>[ Collected {{ card.created }} ]</mat-card-subtitle>
-                    </a>
+                    </div>
                 </mat-card>
             } @empty {
                 @if (loading) {
@@ -34,3 +34,6 @@
         }
     </div>
 </div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="true" [(cards)]="cards"></app-full-card>

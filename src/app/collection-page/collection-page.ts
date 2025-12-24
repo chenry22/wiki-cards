@@ -6,16 +6,29 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { FullCard } from '../full-card/full-card';
+
+export interface WikiCard {
+  id: string,
+  rarity: string,
+  wiki_id: string,
+  title: string,
+  link: string,
+  thumbnail: string,
+  created: string,
+  starred: boolean
+}
 
 @Component({
   selector: 'app-collection-page',
-  imports: [MatCardModule, MatDividerModule, MatButtonToggleModule, MatButtonModule, MatIconModule],
+  imports: [MatCardModule, MatDividerModule, MatButtonToggleModule, 
+    MatButtonModule, MatIconModule, FullCard],
   templateUrl: './collection-page.html',
   styleUrl: './collection-page.css',
 })
 export class CollectionPage {
   firebase = inject(Firebase);
-  cards: any[] = [];
+  cards: WikiCard[] = [];
 
   loading = true;
   lastDoc: DocumentSnapshot | null = null;
@@ -23,6 +36,14 @@ export class CollectionPage {
 
   moreCards = true;
   private loadLimit = 20;
+
+  selectedCard: WikiCard | undefined;
+  selected = false;
+
+  showFullCard(card: WikiCard) {
+    this.selectedCard = card;
+    this.selected = true;
+  }
 
   private reloadEffect = effect(() => {
     // when username signal updates, this will reload packs for the found user
@@ -62,6 +83,7 @@ export class CollectionPage {
         this.cards.push({
           id: card.id,
           rarity: r,
+          wiki_id: data['id'],
           title: data['title'],
           link: data['link'],
           thumbnail: data['thumbnail'],
@@ -80,11 +102,13 @@ export class CollectionPage {
     this.loadCards();
   }
 
-  async starCard(card: any) {
+  async starCard(card: any, e: MouseEvent) {
+    e.stopPropagation();
     card.starred = true;
     this.firebase.starCard(card.id);
   }
-  async unstarCard(card: any) {
+  async unstarCard(card: any, e: MouseEvent) {
+    e.stopPropagation();
     card.starred = false;
     this.firebase.unstarCard(card.id);
   }
