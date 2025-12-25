@@ -21,6 +21,7 @@ export class FullCard {
   card = model<WikiCard>();
   currUser = input(false);
   cards = model<WikiCard[]>();
+  profilePage = input(false);
   desc = 'Loading...';
 
 
@@ -82,6 +83,20 @@ export class FullCard {
     var c = this.card();
     if (c === undefined) { return; }
     this.firebase.setFeaturedCard(c);
+  }
+
+  async removeFeatured() {
+    var c = this.card();
+    if (c === undefined) { return; }
+    
+    if (confirm("Are you sure you want to un-feature this card?") && await this.firebase.removeFeaturedCard(c)) {
+      this.cards.set(
+        this.cards()?.filter((card) => {
+          return card.id !== this.card()?.id;
+        })
+      )
+      this.shown.set(false);
+    }
   }
 
   setProfilePicture() {

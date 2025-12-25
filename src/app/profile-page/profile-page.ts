@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Firebase } from '../firebase';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +7,6 @@ import { FullCard } from '../full-card/full-card';
 
 export interface Profile {
   username: string,
-  currentUser: boolean,
   pfp: string | null,
   joined: Date,
   featured: any[]
@@ -27,19 +26,27 @@ export class ProfilePage {
 
   profile: Profile = {
     username: '---',
-    currentUser: false,
     pfp: null,
     joined: new Date(),
     featured: []
   };
 
+  currentUser = false;
+
   selectedCard: WikiCard | undefined;
   selected = false;
+
+  private reloadEffect = effect(() => {
+    // when username signal updates, this will reload balance for user
+    console.log("reload");
+    this.currentUser = this.firebase.username() === this.profile.username;
+  });
 
   constructor() {
     // Access route parameters
     this.route.params.subscribe(params => {
       var username = params['username'] || '';
+      this.profile.username = username;
       this.loadProfile(username);
     });
   }

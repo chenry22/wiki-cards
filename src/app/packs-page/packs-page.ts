@@ -1,10 +1,11 @@
 import { Component, effect, inject, OnInit } from '@angular/core';
 import { Firebase } from '../firebase';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-packs-page',
-  imports: [],
+  imports: [MatIconModule, RouterLink],
   templateUrl: './packs-page.html',
   styleUrl: './packs-page.css',
 })

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, runTransaction, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Profile } from './profile-page/profile-page';
@@ -19,7 +19,6 @@ export class Firebase {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         console.log("New user signed in!");
-        console.log(user);
         this.username.set(user.displayName);
       } else {
         console.log("User signed out")
@@ -269,7 +268,6 @@ export class Firebase {
   async loadProfile(username: string) {
     var data: Profile = {
       username: username,
-      currentUser: username !== '' && this.username() === username,
       pfp: null,
       joined: new Date(),
       featured: new Array<WikiCard>()
@@ -389,5 +387,61 @@ export class Firebase {
 
     alert("Successfully added to featured cards!");
     return true;
+  }
+
+  async removeFeaturedCard(card: WikiCard) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return false;
+    }
+
+    await deleteDoc(doc(this.firestore, 'users', username, 'featured', card.id));
+    return true;
+  }
+
+  async loadBalance() {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return 0;
+    }
+
+    let user = await getDoc(doc(this.firestore, "users", username));
+    let data = user.data();
+    if (data === undefined) { return 0; }
+    return data['balance'] ?? 0;
+  }
+
+  async buyPack(size: number, cost: number) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return false;
+    }
+    
+    let userRef = doc(this.firestore, "users", username);
+    let newPackRef = doc(collection(this.firestore, "users", username, "packs"));
+    try {
+      await runTransaction(this.firestore, async (transaction) => {
+        let userDoc = await transaction.get(userRef);
+        let data = userDoc.data();
+        if (!data || data['balance'] < cost ) {
+          alert("Insufficient funds.");
+          throw "Insufficient funds.";
+        }
+
+        transaction.set(newPackRef, 
+          { cards: size, created: new Date() }
+        );
+        transaction.update(userRef, 
+          { balance: increment(-cost) }
+        )
+      });
+      return true;
+    } catch (e) {
+      console.log("Transaction failed: ", e);
+      return false;
+    }
   }
 }

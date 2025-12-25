@@ -23,8 +23,8 @@
 
 #time {
     font-family: "Quantico", sans-serif;
-    padding: 80px 60px;
-    width: 200px;
+    padding: 80px 50px;
+    min-width: 280px;
     text-align: center;
     background-color: rgb(255, 255, 255);
     font-size: 3.5em;

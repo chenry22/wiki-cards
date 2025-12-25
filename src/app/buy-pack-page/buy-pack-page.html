@@ -1,8 +1,13 @@
 <div class="main">
-    <div class="balance">Balance: 0</div>
+    <div class="balance">
+        <h2>Balance: {{ balance }} coin</h2>
+    </div>
     <div class="packs">
-        <button>One Pack (20)</button>
-        <button>Three Pack (50)</button>
-        <button>Five Pack (70)</button>
+        <button (click)="buyOneCardPack()">One Pack ({{ oneCardPackCost }})</button>
+        <button (click)="buyThreeCardPack()">Three Pack ({{ threeCardPackCost }})</button>
+        <button (click)="buyFiveCardPack()">Five Pack ({{ fiveCardPackCost }})</button>
+    </div>
+    <div class="back">
+        <a routerLink="/packs">View Packs</a>
     </div>
 </div>

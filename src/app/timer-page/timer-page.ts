@@ -14,16 +14,16 @@ export class TimerPage {
   firebase = inject(Firebase);
   
   private increment = 5 * 60;
-  private minTime = 5 * 60;
-  private maxTime = 120 * 60;
+  private minTime = 15 * 60;
+  private maxTime = 180 * 60;
 
   private timeRemaining = signal(30 * 60);
   private timerInit = signal(30 * 60)
   private timerId: number | null = null;
 
-  private cardTimeRewardRate = 60 * 12;
-  private cardMultRate = 60 * 120;
-  private maxCardMult = 1.8;
+  private cardTimeRewardRate = 60 * 17;
+  private cardMultRate = 60 * 220;
+  private maxCardMult = 1.5;
   get cardReward() {
     if (this.timerActive) {
       var mult = Math.min(this.maxCardMult, 1 + this.timerInit() / this.cardMultRate);
@@ -59,7 +59,9 @@ export class TimerPage {
 
   formatTime(seconds: number) {
     if (seconds > 60) {
-      return String(Math.floor(seconds / 60)).padStart(2, '0') + ":" + String(seconds % 60).padStart(2, '0')
+      return String(Math.floor(seconds / 3600)).padStart(2, '0')
+        + ":" + String(Math.floor(seconds / 60) % 60).padStart(2, '0') 
+        + ":" + String(seconds % 60).padStart(2, '0')
     } else {
       return "00:" + String(seconds).padStart(2, '0');
     }

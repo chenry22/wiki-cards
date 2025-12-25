@@ -12,7 +12,7 @@
             @for (pack of packs; track pack.id) {
                 <div (click)="redeemPack(pack.id)" class="pack">
                     <img src="card-pack.png"/>
-                    <p>{{ pack.cards }} cards</p>
+                    <p>[ {{ pack.cards }} cards ]</p>
                     <p><i>Created {{ pack.created}}</i></p>
                 </div>
             } @empty {
@@ -20,12 +20,13 @@
                     <div>
                         <p>Loading...</p>
                     </div>
-                } @else {
-                    <div>
-                        <p>[ No packs ]</p>
-                    </div>
                 }
             }
+
+            <a routerLink="/buy_packs" class="buy-more">
+                <mat-icon aria-hidden="false" aria-label="Buy More">add_circle</mat-icon>
+                <p>Buy More Packs</p>
+            </a>
         </div>
     }
 </div>
