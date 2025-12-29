@@ -22,15 +22,19 @@
 
 .overlay mat-card {
     position: relative;
-    width: 40dvw;
-    min-width: 500px;
-    height: 85dvh;
+    min-width: 40dvw;
+    width: 500px;
+    max-width: 80dvw;
+
+    max-height: 80dvh;
+    height: 800px;
     padding: 30px;
     background-color: white;
     border-radius: 4px;
 
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
 .overlay mat-card-title {
@@ -41,7 +45,7 @@
 
 mat-card img {
     object-fit: contain;
-    max-height: 34vh;
+    max-height: 32vh;
     max-width: 100%;
     margin: 10px auto;
 }

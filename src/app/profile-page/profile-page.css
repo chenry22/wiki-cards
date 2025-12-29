@@ -1,9 +1,10 @@
 .container {
-    margin: 30px 60px;
+    margin: 30px 50px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 90vw;
+    max-width: 92vw;
+    height: calc(100dvh - 110px);
 }
 
 .header {
@@ -27,6 +28,7 @@
     border: 2px solid darkblue;
 }
 
+
 .divider {
     height: 0px;
     border: 1px solid rgba(99, 99, 99, 0.4);
@@ -42,7 +44,7 @@
     flex-direction: row;
     padding: 8px;
     gap: 30px;
-    height: fit-content;
+    height: 40%;
 }
 
 .cards mat-card {
@@ -50,13 +52,16 @@
     background-color: white;
     border-radius: 4px;
     padding: 20px;
-    width: 260px;
+    width: 20dvw;
+    max-width: 240px;
 
     justify-content: center;
     align-items: center;
     text-align: center;
 
     display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
     flex-direction: column;
     transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
@@ -68,8 +73,23 @@
 
 .cards mat-card img {
     object-fit: contain;
-    max-width: 90%;
+    max-width: 14dvw;
 }
 .cards mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+
+@media (max-width: 720px) {
+    .header img {
+        height: 16dvh;
+    }
+
+    .cards mat-card {
+        min-width: 48dvw;
+        padding: 30px 20px;
+    }
+
+    .cards mat-card img {
+        max-width: 30dvw;
+    }
 }

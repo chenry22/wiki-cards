@@ -1,0 +1,39 @@
+.container {
+    margin: 30px 50px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profiles-container {
+    overflow: auto hidden;
+
+}
+.profiles {
+    padding: 20px;
+    display: flex;
+    gap: 40px;
+}
+.profile {
+    width: 14dvw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.profile i {
+    font-size: smaller;
+    color: black;
+    text-decoration: none;
+}
+.profile img {
+    max-width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border: 2px solid aqua;
+    background-color: white;
+    border-radius: 100px;
+}

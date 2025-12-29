@@ -13,7 +13,7 @@
     scroll-snap-type: x mandatory;
     display: flex;
     align-items: center;
-    gap: 48px;
+    gap: 8vw;
 }
 .pack-scroll::-webkit-scrollbar {
     display: none;
@@ -36,7 +36,8 @@
     cursor: pointer;
 }
 .pack img {
-    width: 32vw;
+    max-width: 50vw;
+    max-height: 60vh;
 }
 
 

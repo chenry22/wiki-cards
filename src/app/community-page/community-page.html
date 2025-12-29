@@ -1,3 +1,41 @@
 <div class="container">
-    <p>This is a list of random profiles...</p>
+    <div class="content-header">
+        <h1>New Users</h1>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profiles-container">
+        <div class="profiles">
+            @for (profile of profiles; track profile.username) {
+                <a [routerLink]="'/profile/' + profile.username">
+                    <div class="profile">
+                        <img src="{{ profile.pfp ?? 'default-card.png' }}"/>
+                        <p>{{ profile.username }}
+                            <br>
+                            <i>Joined {{ profile.joined.toDateString() }}</i>
+                        </p>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- <div>
+        <h1>Recent Packs</h1>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profiles-container">
+        <div class="profiles">
+            @for (profile of profiles; track profile.username) {
+                <a [routerLink]="'/profile/' + profile.username">
+                    <div class="profile">
+                        <img src="{{ profile.pfp ?? 'default-card.png' }}"/>
+                        <p>{{ profile.username }}
+                            <br>
+                            <i>Joined {{ profile.joined.toDateString() }}</i>
+                        </p>
+                    </div>
+                </a>
+            }
+        </div>
+    </div> -->
 </div>

@@ -19,11 +19,11 @@
             @if (currIndex < pages.length) {
                 <div id="cards">
                     @if (currIndex > 0) {
-                        <button matFab aria-label="Previous card" (click)="commitSwipe('left')" class="card-button">
+                        <button matFab aria-label="Previous card" (click)="commitSwipe('left')" class="card-button non-mobile">
                             <mat-icon>arrow_back_ios</mat-icon>
                         </button>
                     } @else {
-                        <span></span>
+                        <span class="non-mobile"></span>
                     }
 
                     @if (pages[currIndex] != undefined) {
@@ -59,19 +59,39 @@
                     }
 
                     @if (currIndex < pages.length - 1) {
-                        <button matFab aria-label="Next card" (click)="commitSwipe('right')" class="card-button">
+                        <button matFab aria-label="Next card" (click)="commitSwipe('right')" class="card-button non-mobile">
                             <mat-icon>arrow_forward_ios</mat-icon>
                         </button>
                     } @else {
-                        <span></span>
+                        <span class="non-mobile"></span>
                     }
+
+                    <div id="mobile-swipe-buttons">
+                        @if (currIndex > 0) {
+                            <button matFab aria-label="Previous card" (click)="commitSwipe('left')" class="card-button">
+                                <mat-icon>arrow_back_ios</mat-icon>
+                            </button>
+                        } @else {
+                            <span></span>
+                        }
+
+                        @if (currIndex < pages.length - 1) {
+                            <button matFab aria-label="Next card" (click)="commitSwipe('right')" class="card-button">
+                                <mat-icon>arrow_forward_ios</mat-icon>
+                            </button>
+                        } @else {
+                            <span></span>
+                        }
+                    </div>
                 </div>
             }
 
-            @if (pages.length === packSize) {
+            @if (pages.length === packSize && currIndex === pages.length - 1) {
                 <button class="summary-button" matButton="filled" (click)="showSummary()">Pack Summary</button>
+            } @else if (pages.length !== packSize) {
+                <mat-spinner size="16" active-indicator-color="#ffffff"/>
             } @else {
-                <mat-spinner size="20" active-indicator-color="#ffffff"/>
+                <button class="summary-button" matButton="filled" style="visibility: hidden;"></button>
             }
         </div>
     } @else if (state === PackState.Summary) {

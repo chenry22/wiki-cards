@@ -113,6 +113,9 @@ export class PackPage  {
     if (this.swipeLocked) return;
     this.swipeLocked = true;
 
+    if (this.currIndex === 0 && direction === 'left') { return; }
+    if (this.currIndex === this.pages.length - 1 && direction === 'right') { return; }
+
     var movement = 140
     var rotate = 4
     this.currentX = direction === 'right' ? -movement : movement;

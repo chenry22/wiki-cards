@@ -252,11 +252,13 @@ export class Firebase {
       return;
     }
 
-    var lastClaim = data['lastClaim'];
+    var lastClaim: Date = data['lastClaim'].toDate();
     var check = new Date();
-    check.setTime(Date.now() - 24 * 60 * 60 * 1000);
+    var differentDay = check.getFullYear() !== lastClaim.getFullYear() ||  
+      check.getMonth() !== lastClaim.getMonth() ||
+      check.getDate() !== lastClaim.getDate();
 
-    if (lastClaim === undefined || lastClaim.toDate() <= check) {
+    if (lastClaim === undefined || differentDay) {
       await this.createPack(3);
       await updateDoc(doc(this.firestore, "users", username), "lastClaim", new Date());
       alert("Daily pack claimed!");
@@ -443,5 +445,22 @@ export class Firebase {
       console.log("Transaction failed: ", e);
       return false;
     }
+  }
+
+  async loadRandomProfiles(lim: number) {
+    var q = await query(collection(this.firestore, "users"),
+        orderBy('joined', 'desc'), limit(lim),
+      )
+      var snapshot = await getDocs(q);
+      var profiles: Profile[] = snapshot.docs.map((doc) => {
+        let data = doc.data();
+        return {
+          username: doc.id,
+          pfp: data['pfp'],
+          joined: data['joined'].toDate(),
+          featured: []
+        };
+      })
+      return profiles;
   }
 }
