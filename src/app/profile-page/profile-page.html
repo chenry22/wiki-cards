@@ -15,7 +15,7 @@
             <div class="card-container">
                 <div class="cards">
                     @for (card of profile.featured; track card.id) {
-                        <mat-card [attr.id]="card.id" [attr.class]="card.rarity" (click)="showFullCard(card)">
+                        <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
                             <mat-card-title>{{ card.title }}</mat-card-title>
                             <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
                             <mat-card-footer><i>[ Collected {{ card.created }} ]</i></mat-card-footer>

@@ -34,7 +34,8 @@
 
                             [style.transform]="'translateX(' + currentX + 'px)'"
                             [style.rotate]="rotationX + 'deg'"
-                            [attr.id]="pages[currIndex].id" [attr.class]="pages[currIndex].class"
+                            [attr.id]="pages[currIndex].id" 
+                            [attr.class]="pages[currIndex].class"
                         >
                             <button matIconButton class="star-button" (click)="pages[currIndex].starred ? unstarCard() : starCard()">
                                 <mat-icon>{{ pages[currIndex].starred ? 'star' : 'star_outline' }}</mat-icon>

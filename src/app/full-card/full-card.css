@@ -59,6 +59,18 @@ mat-card img {
     margin-top: auto;
 }
 
+.overlay mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+}
+.effect-button {
+    overflow: hidden;
+    position: relative;
+    padding: 10px;
+    border-radius: 20px;
+    border: 2px inset rgba(0, 0, 0, 0.4);
+}
+
 .menu-button {
     position: absolute;
     top: 10px;

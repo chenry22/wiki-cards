@@ -26,3 +26,12 @@ mat-icon {
     cursor: pointer;
 }
 
+@media (max-width: 600px) {
+    mat-toolbar {
+        font-size: large;
+    }
+    .title a {
+        font-size: x-large;
+    }
+}
+

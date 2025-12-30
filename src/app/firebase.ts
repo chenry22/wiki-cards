@@ -3,7 +3,7 @@ import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getCou
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Profile } from './profile-page/profile-page';
-import { WikiCard } from './collection-page/collection-page';
+import { Effect, WikiCard } from './collection-page/collection-page';
 
 @Injectable({
   providedIn: 'root'
@@ -116,6 +116,21 @@ export class Firebase {
       return 4;
     }
   }
+  rarityNumberToString(r: number) {
+    if (r == 0) {
+      return "common";
+    } else if (r == 1) {
+      return "uncommon";
+    } else if (r == 2) {
+      return "rare";
+    } else if (r == 3) {
+      return "epic"
+    } else if (r == 4) {
+      return "legendary"
+    } else {
+      return "error"
+    }
+  }
 
   async openPack(packID: string, cards: any[]) {
     if (packID === '') {
@@ -132,7 +147,6 @@ export class Firebase {
 
     // add docs to user collection
     for(var i in cards) {
-
       batch.set(doc(this.firestore, "cards", packID + i), 
         { 
           id: cards[i].id,
@@ -144,6 +158,7 @@ export class Firebase {
           link: cards[i].link,
           rarity: this.rarityStringToNumber(cards[i].rarity),
           created: new Date(),
+          effect: cards[i]?.effect ?? Effect.none
         }
       );
     }
@@ -252,15 +267,19 @@ export class Firebase {
       return;
     }
 
-    var lastClaim: Date = data['lastClaim'].toDate();
-    var check = new Date();
-    var differentDay = check.getFullYear() !== lastClaim.getFullYear() ||  
-      check.getMonth() !== lastClaim.getMonth() ||
-      check.getDate() !== lastClaim.getDate();
+    var lastClaim: Date;
+    var differentDay;
+    if (data['lastClaim']) {
+      lastClaim = data['lastClaim'].toDate();
+      let check = new Date();
+      differentDay = check.getFullYear() !== lastClaim.getFullYear() ||  
+        check.getMonth() !== lastClaim.getMonth() ||
+        check.getDate() !== lastClaim.getDate();
+    }
 
-    if (lastClaim === undefined || differentDay) {
+    if (data['lastClaim'] === undefined || differentDay) {
       await this.createPack(3);
-      await updateDoc(doc(this.firestore, "users", username), "lastClaim", new Date());
+      await updateDoc(doc(this.firestore, "users", username), { lastClaim : new Date() });
       alert("Daily pack claimed!");
     } else {
       alert("You already claimed your daily pack today.");
@@ -308,7 +327,8 @@ export class Firebase {
           link: d['link'],
           thumbnail: d['thumbnail'],
           created: d['created'],
-          starred: d['starred']
+          starred: d['starred'],
+          effect: d['effect']
         };
       });
     }
@@ -365,6 +385,7 @@ export class Firebase {
       thumbnail: card.thumbnail,
       link: card.link,
       rarity: this.rarityStringToNumber(card.rarity),
+      effect: card.effect,
       created: card.created,
     };
 
@@ -451,16 +472,37 @@ export class Firebase {
     var q = await query(collection(this.firestore, "users"),
         orderBy('joined', 'desc'), limit(lim),
       )
-      var snapshot = await getDocs(q);
-      var profiles: Profile[] = snapshot.docs.map((doc) => {
-        let data = doc.data();
-        return {
-          username: doc.id,
-          pfp: data['pfp'],
-          joined: data['joined'].toDate(),
-          featured: []
-        };
-      })
-      return profiles;
+    var snapshot = await getDocs(q);
+    var profiles: Profile[] = snapshot.docs.map((doc) => {
+      let data = doc.data();
+      return {
+        username: doc.id,
+        pfp: data['pfp'],
+        joined: data['joined'].toDate(),
+        featured: []
+      };
+    })
+    return profiles;
+  }
+
+  async loadRecentCards(lim: number) {
+    var q = await query(collection(this.firestore, 'cards'),
+      orderBy('created', 'desc'), limit(lim)
+    );
+    var snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => {
+      let data = doc.data();
+      return {
+        id: doc.id,
+        username: data['username'],
+
+        title: data['title'],
+        thumbnail: data['thumbnail'],
+        link: data['link'],
+        rarity: this.rarityNumberToString(data['rarity']),
+        effect: data['effect'],
+        created: data['created'].toDate(),
+      };
+    })
   }
 }

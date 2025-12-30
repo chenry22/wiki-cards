@@ -14,10 +14,11 @@
 .profiles {
     padding: 20px;
     display: flex;
-    gap: 40px;
+    gap: 30px;
 }
 .profile {
-    width: 14dvw;
+    width: 12dvw;
+    min-width: 140px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,4 +37,61 @@
     border: 2px solid aqua;
     background-color: white;
     border-radius: 100px;
+}
+
+
+.packs {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin: 20px 0;
+    padding-bottom: 60px;
+}
+.collected {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.collected h4 {
+    color: rgb(14, 14, 89);
+    font-style: italic;
+    margin: 0;
+}
+
+.cards {
+    overflow: auto hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
+.cards::-webkit-scrollbar { 
+    display: none;
+}
+.card {
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    width: 160px;
+    height: 240px;
+    background-color: white;
+
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    box-shadow: -4px 4px 6px rgba(0, 0, 0, 0.2);
+
+    transition: transform 0.5s ease-in-out;
+}
+.card:hover {
+    cursor: pointer;
+    transform: translate(2px, -2px);
+}
+.card img {
+    object-fit: contain;
+    padding: 10px;
+    max-height: 70%;
 }

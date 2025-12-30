@@ -50,6 +50,7 @@ h1 {
 }
 
 .star-button {
+    color: inherit;
     position: absolute;
     top: 0;
     right: 0;
@@ -73,6 +74,7 @@ h1 {
 }
 
 .cards mat-card-subtitle {
+    color: inherit;
     font-weight: normal;
     font-size: small;
     font-style: italic;

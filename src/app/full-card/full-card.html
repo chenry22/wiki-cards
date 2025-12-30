@@ -10,6 +10,10 @@
             </mat-card-content>
             <mat-card-actions>
                 <a target="_blank" href="{{ card()?.link }}">Full Article ↗</a>
+                @if ((card()?.effect ?? 'none') !== 'none') {
+                    <span></span>
+                    <button [class]="'effect-button ' + card()?.effect">[ {{ card()?.effect?.toString()?.toUpperCase() ?? '' }} ]</button>
+                }
             </mat-card-actions>
             
             @if (currUser()) {

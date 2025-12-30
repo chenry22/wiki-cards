@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, model, ViewChild } from '@angular/core';
 import { Firebase } from '../firebase';
 import { MatCardModule } from '@angular/material/card';
-import { WikiCard } from '../collection-page/collection-page';
+import { Effect, WikiCard } from '../collection-page/collection-page';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -106,17 +106,39 @@ export class FullCard {
   }
 
   cardSellValue() {
+    var base = 0;
+    switch(this.card()?.effect) {
+      case Effect.red:
+      case Effect.blue:
+      case Effect.green:
+        base = 10;
+        break;
+      case Effect.silver:
+        base = 20;
+        break;
+      case Effect.gold:
+        base = 30;
+        break;
+      case Effect.negative:
+        base = 50;
+        break;
+      case Effect.holo:
+        base = 100;
+        break;
+      default:
+        break;
+    }
     switch(this.card()?.rarity) {
       case 'common':
-        return 5;
+        return 5 + base;
       case 'uncommon':
-        return 10;
+        return 10 + base;
       case 'rare':
-        return 25;
+        return 25 + base;
       case 'epic':
-        return 50;
+        return 50 + base;
       case 'legendary':
-        return 100;
+        return 100 + base;
       default: 
         return 0;
     }

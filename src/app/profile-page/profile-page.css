@@ -1,5 +1,5 @@
 .container {
-    margin: 30px 50px;
+    margin: 24px 50px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -35,7 +35,7 @@
 }
 
 .card-container {
-    margin-top: 10px;
+    margin: 20px 0;
     overflow: auto hidden;
 }
 
@@ -48,12 +48,15 @@
 }
 
 .cards mat-card {
+    position: relative;
+    overflow: hidden;
+
     box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.2);
     background-color: white;
     border-radius: 4px;
     padding: 20px;
-    width: 20dvw;
-    max-width: 240px;
+    min-width: 200px;
+    max-width: 200px;
 
     justify-content: center;
     align-items: center;
@@ -67,13 +70,13 @@
 }
 .cards mat-card:hover {
     cursor: pointer;
-    transform: scale(1.02);
+    transform: translate(2px, -2px);
     box-shadow: -5px 5px 4px rgba(0, 0, 0, 0.2);
 }
 
 .cards mat-card img {
-    object-fit: contain;
-    max-width: 14dvw;
+    object-fit: cover;
+    max-height: 26dvh;
 }
 .cards mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
@@ -82,14 +85,5 @@
 @media (max-width: 720px) {
     .header img {
         height: 16dvh;
-    }
-
-    .cards mat-card {
-        min-width: 48dvw;
-        padding: 30px 20px;
-    }
-
-    .cards mat-card img {
-        max-width: 30dvw;
     }
 }

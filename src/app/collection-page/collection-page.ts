@@ -16,7 +16,14 @@ export interface WikiCard {
   link: string,
   thumbnail: string,
   created: string,
-  starred: boolean
+  starred: boolean,
+  effect: Effect
+}
+
+export enum Effect {
+  none = 'none', red = 'red', blue = 'blue', green = 'green',
+  silver = 'silver', gold = 'gold', 
+  negative = 'negative', holo = 'holo'
 }
 
 @Component({
@@ -88,7 +95,8 @@ export class CollectionPage {
           link: data['link'],
           thumbnail: data['thumbnail'],
           created: data['created'].toDate().toDateString(),
-          starred: data['starred']
+          starred: data['starred'],
+          effect: data['effect'] ?? Effect.none
         });
       });
       this.loading = false;

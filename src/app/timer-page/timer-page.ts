@@ -21,9 +21,9 @@ export class TimerPage {
   private timerInit = signal(30 * 60)
   private timerId: number | null = null;
 
-  private cardTimeRewardRate = 60 * 17;
-  private cardMultRate = 60 * 220;
-  private maxCardMult = 1.5;
+  private cardTimeRewardRate = 60 * 10;
+  private cardMultRate = 60 * 230;
+  private maxCardMult = 1.4;
   get cardReward() {
     if (this.timerActive) {
       var mult = Math.min(this.maxCardMult, 1 + this.timerInit() / this.cardMultRate);

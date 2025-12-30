@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Firebase } from '../firebase';
+import { Effect } from '../collection-page/collection-page';
 
 enum PackState {
   Sealed,
@@ -80,10 +81,36 @@ export class PackPage  {
       } else {
         rarity = "legendary"
       }
-     
 
-      var page = await this.getRandomWikiPages(1, rarity);
+      var effect;
+      chance = Math.random();
+      // 1% for holo
+      // 2% for negative
+      // 5% for gold
+      // 8% for silver
+      // 10% for color (even split)
+      if (chance <= 0.01) {
+        effect = Effect.holo;
+      } else if (chance <= 0.02) {
+        effect = Effect.negative;
+      } else if (chance <= 0.05) {
+        effect = Effect.gold;
+      } else if (chance <= 0.08) {
+        effect = Effect.silver;
+      } else if (chance <= 0.1) {
+        chance = Math.random();
+        if (chance <= 0.33) {
+          effect = Effect.red;
+        } else if (chance <= 0.66) {
+          effect = Effect.green;
+        } else {
+          effect = Effect.blue;
+        }
+      }
+
+      var page = await this.getRandomWikiPages(1, rarity, effect);
       page[0].rarity = rarity;
+      page[0].effect = effect;
       this.pages.push(page[0]);
     }
 
@@ -160,7 +187,7 @@ export class PackPage  {
 
 
   // wikipedia api stuff
-  async getRandomWikiPages(count=5, rarity="common") {
+  async getRandomWikiPages(count=5, rarity="common", effect=Effect.none) {
     var minsize, maxsize;
     switch(rarity) {
       case "common":
@@ -202,7 +229,7 @@ export class PackPage  {
     const response = await (await fetch(url)).json();
     var pages = response.query.random;
     for (var i in pages) {
-      pages[i].class = "card " + rarity
+      pages[i].class = "card " + rarity + " " + effect
       // get data for page
       const params = {
         action: "opensearch",

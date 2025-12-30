@@ -2,7 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Firebase } from '../firebase';
 import { MatCardModule } from '@angular/material/card';
-import { WikiCard } from '../collection-page/collection-page';
+import { Effect, WikiCard } from '../collection-page/collection-page';
 import { FullCard } from '../full-card/full-card';
 
 export interface Profile {
@@ -54,6 +54,7 @@ export class ProfilePage {
   async loadProfile(username: string) {
     var tmp = await this.firebase.loadProfile(username);
     if (tmp) {
+      this.currentUser = this.firebase.username() === username;
       this.profile = tmp;
     }
   }

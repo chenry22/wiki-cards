@@ -11,7 +11,7 @@
         <mat-divider></mat-divider>
         <div class="cards">
             @for (card of cards; track card.id) {
-                <mat-card [attr.id]="card.id" [attr.class]="card.rarity" (click)="showFullCard(card)">
+                <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
                     <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
                         <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
                     </button>

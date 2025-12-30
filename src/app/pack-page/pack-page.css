@@ -92,6 +92,9 @@
 }
 
 .card {
+    position: relative;
+    overflow: hidden;
+    
     z-index: 0;
     flex-shrink: 0;
 

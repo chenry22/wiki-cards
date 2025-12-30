@@ -15,27 +15,34 @@
                         </p>
                     </div>
                 </a>
+            } @empty {
+                <span>[ None found ]</span>
             }
         </div>
     </div>
 
-    <!-- <div>
+    <div>
         <h1>Recent Packs</h1>
     </div>
     <mat-divider></mat-divider>
-    <div class="profiles-container">
-        <div class="profiles">
-            @for (profile of profiles; track profile.username) {
-                <a [routerLink]="'/profile/' + profile.username">
-                    <div class="profile">
-                        <img src="{{ profile.pfp ?? 'default-card.png' }}"/>
-                        <p>{{ profile.username }}
-                            <br>
-                            <i>Joined {{ profile.joined.toDateString() }}</i>
-                        </p>
-                    </div>
-                </a>
-            }
-        </div>
-    </div> -->
+    <div class="packs">
+        @for (pack of cards; track pack[0].id) {
+            <div class="collected">
+                <h4>{{ pack[0].username }} collected {{ pack.length }} cards ({{ timeSince(pack[0].created) }} ago)</h4>
+                <div class="cards">
+                    @for (card of pack; track card.id) {
+                        <div [attr.class]="'card ' + card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                            <h3>{{ card.title }}</h3>
+                            <img src="{{ card.thumbnail ?? 'default-card.png' }}"/>
+                        </div>
+                    }
+                </div>
+            </div>
+        } @empty {
+            <span>[ None found ]</span>
+        }
+    </div>
 </div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="false" [(cards)]="cards"></app-full-card>
