@@ -70,13 +70,13 @@ export class PackPage  {
     for(var i = 0; i < this.packSize; i++) {
       var rarity;
       var chance = Math.random();
-      if (chance < 0.38) {
+      if (chance < 0.40) {
         rarity = "common";
-      } else if (chance < 0.66) {
+      } else if (chance < 0.70) {
         rarity = "uncommon"
-      } else if (chance < 0.84) {
+      } else if (chance < 0.87) {
         rarity = "rare"
-      } else if (chance < 0.94) {
+      } else if (chance < 0.96) {
         rarity = "epic"
       } else {
         rarity = "legendary"
@@ -93,9 +93,9 @@ export class PackPage  {
         effect = Effect.holo;
       } else if (chance <= 0.02) {
         effect = Effect.negative;
-      } else if (chance <= 0.05) {
+      } else if (chance <= 0.03) {
         effect = Effect.gold;
-      } else if (chance <= 0.08) {
+      } else if (chance <= 0.05) {
         effect = Effect.silver;
       } else if (chance <= 0.1) {
         chance = Math.random();
@@ -106,6 +106,8 @@ export class PackPage  {
         } else {
           effect = Effect.blue;
         }
+      } else {
+        effect = Effect.none;
       }
 
       var page = await this.getRandomWikiPages(1, rarity, effect);

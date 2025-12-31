@@ -12,9 +12,9 @@ export class BuyPackPage implements OnInit {
   firebase = inject(Firebase);
 
   balance = 0;
-  readonly oneCardPackCost = 20;
-  readonly threeCardPackCost = 50;
-  readonly fiveCardPackCost = 70;
+  readonly oneCardPackCost = 30;
+  readonly threeCardPackCost = 60;
+  readonly fiveCardPackCost = 90;
 
   private reloadEffect = effect(() => {
     // when username signal updates, this will reload balance for user

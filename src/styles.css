@@ -257,7 +257,7 @@ body { margin: 0; }
 
 
 .holo {
-    background-image: url("/holo.avif");
+    background-image: url("/holo.avif") !important;
     background:
         linear-gradient(
             120deg,
@@ -266,7 +266,7 @@ body { margin: 0; }
             #00ffd5,
             #6a00ff,
             #ff004c
-        );
+        ) !important;
     animation: polyShift 8s linear infinite alternate-reverse;
     mix-blend-mode:multiply;
 }
