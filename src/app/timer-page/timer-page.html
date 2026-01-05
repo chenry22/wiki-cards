@@ -39,5 +39,9 @@
         <button (click)="claimPack()" matButton="filled">Claim Pack</button>
     }
 
-    <span><i>[ Reward: {{ cardReward }} cards ]</i></span>
+    @if (firebase.username()) {
+        <span><i>[ Reward: {{ cardReward }} cards ]</i></span>
+    } @else {
+        <span><i>[ No reward. Log in to earn packs! ]</i></span>
+    }
 </div>

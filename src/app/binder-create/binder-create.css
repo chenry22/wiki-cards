@@ -1,0 +1,133 @@
+.overlay {
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+}
+
+.overlay mat-card {
+    position: relative;
+    width: 80dvw;
+
+    height: 90dvh;
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    overflow: hidden auto;
+}
+
+.binder {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header div {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-size: 1.5rem;
+}   
+
+.binder-preview img {
+    object-fit: contain;
+    mix-blend-mode: hard-light;
+    max-height: 30vh;
+    max-width: 240px;
+    margin: 10px 0;
+}
+
+.binder-preview {
+    display: flex;
+    gap: 20px;
+    align-items: start;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: -20px;
+    padding: 0;
+}
+
+.overlay mat-card-content .binder-desc {
+    width: 100%;
+    max-width: 500px;
+    white-space: pre-line;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.overlay mat-card-actions {
+    justify-content: center;
+}
+
+.selected {
+    z-index: 200;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    transform: scale(0.7);
+}
+.selected button {
+    background-color: rgb(95, 235, 95);
+    border-radius: 20px;
+}
+
+.cards {
+    display: flex;
+    overflow: auto hidden;
+    gap: 20px;
+    padding: 14px 20px;
+    background-color: white;
+    border-radius: 20px;
+}
+.cards mat-card {
+    min-width: 140px;
+    max-height: 200px;
+    overflow: hidden;
+}
+.cards mat-card-title {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-size: small;
+    line-height: normal;
+}
+.cards mat-card img {
+    object-fit: contain;
+    max-width: 100%;
+}

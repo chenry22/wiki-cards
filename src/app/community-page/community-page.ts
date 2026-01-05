@@ -37,7 +37,7 @@ export class CommunityPage {
   }
 
   async loadRecentCards() {
-    let allCards = await this.firebase.loadRecentCards(20);
+    let allCards = await this.firebase.loadRecentCards(30);
     let cards: any[] = [];
     allCards.forEach((card) => {
       if (cards.length === 0 || Math.abs(cards[cards.length - 1][0].created.getTime() - card.created.getTime()) > 100) {

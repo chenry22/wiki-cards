@@ -1,10 +1,26 @@
-.container {
-    height: 92vh;
-    overflow: auto;
+.binder-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
+.binder-header button {
+    border-radius: 20px;
+    transform: scale(0.8);
+}
+
+.binders {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+
 .content {
     margin: 30px 50px;
     padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 h1 {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
@@ -91,9 +107,7 @@ mat-card-content {
 }
 
 .load-button {
-    margin: 0 auto;
-    align-self: center;
-    justify-content: center;
+    margin: 10px auto; 
 }
 
 @media (max-width: 600px) {
@@ -106,4 +120,36 @@ mat-card-content {
     mat-card-title {
         font-size: 16px;
     }
+}
+
+
+.binder {
+    text-decoration: none;
+    color: inherit;
+    padding: 14px;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+
+    transition: transform .4s ease-in-out;
+}
+.binder h2 {
+    margin: 0;
+}
+.binder:hover {
+    cursor: pointer;
+    background-color: rgba(162, 201, 233, 0.1);
+    transform: rotate(1deg);
+}
+.binder div {
+    border-radius: 10px;
+}
+.binder img {
+    mix-blend-mode: hard-light;
+    max-height: 24dvh;
+    padding: 8px;
 }

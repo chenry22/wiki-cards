@@ -8,7 +8,7 @@
             @for (profile of profiles; track profile.username) {
                 <a [routerLink]="'/profile/' + profile.username">
                     <div class="profile">
-                        <img src="{{ profile.pfp ?? 'default-card.png' }}"/>
+                        <img src="{{ profile.pfp ?? 'default-pfp.png' }}"/>
                         <p>{{ profile.username }}
                             <br>
                             <i>Joined {{ profile.joined.toDateString() }}</i>
@@ -28,7 +28,7 @@
     <div class="packs">
         @for (pack of cards; track pack[0].id) {
             <div class="collected">
-                <h4>{{ pack[0].username }} collected {{ pack.length }} cards ({{ timeSince(pack[0].created) }} ago)</h4>
+                <h4><a [routerLink]="'/profile/' + pack[0].username">{{ pack[0].username }}</a> collected {{ pack.length }} cards ({{ timeSince(pack[0].created) }} ago)</h4>
                 <div class="cards">
                     @for (card of pack; track card.id) {
                         <div [attr.class]="'card ' + card.rarity + ' ' + card.effect" (click)="showFullCard(card)">

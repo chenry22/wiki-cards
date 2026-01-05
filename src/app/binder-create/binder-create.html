@@ -1,0 +1,53 @@
+@if (shown()) {
+    <div class="overlay">
+        <div class="background" (click)="hide()"></div>
+        <mat-card [style.background]="binderColor" >
+            <mat-card-content class="binder">
+                <div class="binder-preview">
+                    <img mat-card-image src="binder.png"/>
+                    <div class="binder-desc">
+                        <div class="header">
+                            <div>Create New Binder</div>
+                            <button (click)="hide()" matButton="filled">Cancel</button>
+                        </div>
+
+                        <mat-form-field class="title">
+                            <mat-label>Binder Title</mat-label>
+                            <input [(ngModel)]="binderTitle" required matInput>
+                        </mat-form-field>
+
+                        <div class="row">
+                            <label for="color">
+                                Binder Color
+                                <input name="color" [(ngModel)]="binderColor" type="color"/>
+                            </label>
+                            <mat-checkbox [(ngModel)]="binderPrivate">Private Binder</mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- card selection -->
+                <div class="cards">
+                    @for (card of cards(); track card.id) {
+                        <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="selectCard(card)">
+                            @if (cardSelected(card)) {
+                                <div class="selected">
+                                    <button matMiniFab>
+                                        <mat-icon>check</mat-icon>
+                                    </button>
+                                </div>
+                            }
+                            <mat-card-title>{{ card.title }}</mat-card-title>
+                            <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                        </mat-card>
+                    } @empty {
+                        [ None ]
+                    }
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <button matButton="filled" (click)="createBinder()">Create Binder</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+}

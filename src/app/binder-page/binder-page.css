@@ -1,0 +1,125 @@
+.container {
+    margin: 20px 40px;
+}
+.header p {
+    font-style: italic;
+    margin: 0;
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+.header a {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+.header {
+    margin-bottom: 20px;
+}
+.row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+#binder {
+    display: flex;
+    gap: 50px;
+    border: 2px solid white;
+    padding: 14px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.page {
+    display: grid;
+    gap: 12px;
+    row-gap: 12px;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+
+    min-width: 400px;
+    max-width: 440px;
+}
+.page mat-card {
+    position: relative;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    text-align: center;
+    height: 24dvh;
+}
+.page mat-card-title {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-size: small;
+    font-weight: 500;
+    line-height: normal;
+    padding: 4px;
+}
+.page mat-card img {
+    object-fit: contain;
+    max-height: 65%;
+}
+.card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease-in-out;
+}
+.card:hover {
+    cursor: pointer;
+    transform: translateY(-3px);
+}
+.white-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.card-outline {
+    cursor: default !important;
+    background-color: rgba(240, 240, 240, 0.5) !important;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+
+.page-change-mobile {
+    display: none;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+.page-change {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+.page-change button {
+    padding: 10px 14px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    background-color: darkblue;
+}
+.page-change-mobile button {
+    padding: 10px 14px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    background-color: darkblue;
+}
+@media (max-width: 920px) {
+    .right {
+        display: none;
+    }
+    .page-change-mobile {
+        display: flex;
+    }
+    .page-change {
+        display: none;
+    }
+}

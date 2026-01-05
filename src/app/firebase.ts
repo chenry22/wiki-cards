@@ -1,9 +1,10 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, runTransaction, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, runTransaction, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Profile } from './profile-page/profile-page';
 import { Effect, WikiCard } from './collection-page/collection-page';
+import { Binder } from './binder-page/binder-page';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,6 @@ export class Firebase {
       } else {
         console.log("User signed out")
         this.username.set(null);
-        this.router.navigateByUrl('sign_in');
       }
     });
   }
@@ -206,6 +206,28 @@ export class Firebase {
       q = query(collection(this.firestore, "cards"), 
         where('username', '==', username),
         orderBy("created", 'desc'), limit(lim), 
+        startAfter(lastDoc)
+      );
+    }
+
+    var snapshot = await getDocs(q);
+    return snapshot.docs;
+  }
+  async loadCollectionByEffect(lastDoc: DocumentSnapshot | null, lim: number = 5) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return [];
+    }
+
+    var q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username), where("effect", "!=", "none"),
+        orderBy("effect", 'desc'), orderBy("created", 'desc'), limit(lim)
+    );
+    if (lastDoc) {
+      q = query(collection(this.firestore, "cards"), 
+        where('username', '==', username), where("effect", "!=", "none"),
+        orderBy("effect", 'desc'), orderBy("created", 'desc'), limit(lim), 
         startAfter(lastDoc)
       );
     }
@@ -503,6 +525,124 @@ export class Firebase {
         effect: data['effect'],
         created: data['created'].toDate(),
       };
+    })
+  }
+
+  async loadBinder(binderID: string) : Promise<Binder | null> {
+    let snapshot = await getDoc(doc(this.firestore, 'binders', binderID));
+    let data = snapshot.data();
+    if (!snapshot.exists() || !data) {
+      return null;
+    }
+
+    if (data['username'] !== this.username() && data['private']) {
+      return null;
+    }
+
+    let q = await query(collection(this.firestore, "binders", binderID, "cards"),
+      orderBy('index', 'asc')
+    );
+    let cards = await getDocs(q);
+
+    return {
+      id: binderID,
+      username: data['username'],
+      private: data['private'],
+      lastUpdated: data['lastUpdated'].toDate(),
+      title: data['title'],
+      color: data['color'],
+      cards: cards.docs.map((doc) => {
+        let d = doc.data()
+        return {
+          id: doc.id,
+          rarity: this.rarityNumberToString(d['rarity']),
+          wiki_id: d['id'],
+          title: d['title'],
+          link: d['link'],
+          thumbnail: d['thumbnail'],
+          created: d['created'],
+          starred: d['starred'] ?? false,
+          effect: d['effect'],
+          index: d['index']
+        }
+      })
+    }
+  }
+
+  async createBinder(title: string, color: string, privateBinder: boolean, cards: Set<WikiCard>) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return undefined;
+    }
+
+    const collectionRef = collection(this.firestore, 'binders');
+    const { id } = doc(collectionRef);
+
+    let binder: Binder = {
+      id: id,
+      username: username,
+      title: title,
+      private: privateBinder,
+      color: color,
+      lastUpdated: new Date,
+      cards: Array.from(cards.entries())
+    }
+
+    let batch = writeBatch(this.firestore);
+    batch.set(doc(this.firestore, "binders", binder.id),
+      {
+        username: username,
+        private: binder.private,
+        lastUpdated: binder.lastUpdated,
+        title: binder.title,
+        color: binder.color
+      }
+    );
+    var i = 0;
+    for (var card of cards) {
+      batch.set(doc(this.firestore, "binders", binder.id, "cards", card.id),
+        {
+          id: card.id,
+          rarity: this.rarityStringToNumber(card.rarity),
+          wiki_id: card.wiki_id,
+          title: card.title,
+          link: card.link,
+          thumbnail: card.thumbnail,
+          created: card.created,
+          effect: card.effect,
+          index: i
+        }
+      )
+      i++;
+    }
+    await batch.commit();
+    return binder;
+  }
+
+  async loadUserBinders() : Promise<Binder[]> {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return [];
+    }
+
+    let q = await query(collection(this.firestore, "binders"),
+      where('username', '==', username)
+    );
+    let binders = await getDocs(q);
+
+    return binders.docs.map((doc) => {
+      let data = doc.data();
+      return {
+        id: doc.id,
+        username: data['username'],
+        private: data['private'],
+        lastUpdated: data['lastUpdated'].toDate(),
+        title: data['title'],
+        color: data['color'],
+        cards: []
+      }
     })
   }
 }

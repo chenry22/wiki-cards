@@ -67,6 +67,17 @@ export class FullCard {
   starCard() {
     var c = this.card();
     if (c) {
+      this.cards.set(
+        this.cards()?.map((card) => {
+          if(card.id === this.card()?.id) {
+            card.starred = true;
+            return card;
+          } else {
+            return card;
+          }
+        })
+      )
+
       this.card.set({ ...c, starred: true });
       this.firebase.starCard(c.id);
     }
@@ -74,6 +85,17 @@ export class FullCard {
   unstarCard() {
     var c = this.card();
     if (c) {
+      this.cards.set(
+        this.cards()?.map((card) => {
+          if(card.id === this.card()?.id) {
+            card.starred = false;
+            return card;
+          } else {
+            return card;
+          }
+        })
+      )
+
       this.card.set({ ...c, starred: false });
       this.firebase.unstarCard(c.id);
     }

@@ -33,7 +33,7 @@
 .profile img {
     max-width: 100%;
     aspect-ratio: 1;
-    object-fit: contain;
+    object-fit: cover;
     border: 2px solid aqua;
     background-color: white;
     border-radius: 100px;

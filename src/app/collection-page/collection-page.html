@@ -1,10 +1,34 @@
 <div class="container">
     <div class="content">
+        <div class="binder-header">
+            <h1>My Binders ({{ binders.length }}/5)</h1>
+
+            @if (binders.length < 5) {
+                <button matMiniFab (click)="showBinderCreate()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            }
+        </div>
+        <mat-divider></mat-divider>
+        <div class="binders">
+            @for (binder of binders; track binder.id) {
+                <a class="binder" [routerLink]="'/binder/' + binder.id">
+                    <div [style.background-color]="binder.color">
+                        <img src="binder.png"/>
+                    </div>
+                    <h2>{{ binder.title }}</h2>
+                </a>
+            } @empty {
+                <div>[ None ]</div>
+            }
+        </div>
+        <br>
         <div class="content-header">
             <h1>My Collection</h1>
             <mat-button-toggle-group name="sortOrder" aria-label="Sort Order" [value]="selectedSort" (change)="changeSort($event.value)">
-                <mat-button-toggle value="Rarity">Rarity</mat-button-toggle>
                 <mat-button-toggle value="Date">Date</mat-button-toggle>
+                <mat-button-toggle value="Rarity">Rarity</mat-button-toggle>
+                <mat-button-toggle value="Effect">Effect</mat-button-toggle>
                 <mat-button-toggle value="Star">Starred</mat-button-toggle>
             </mat-button-toggle-group>
         </div>
@@ -37,3 +61,6 @@
 
 <app-full-card [(card)]="selectedCard" [(shown)]="selected" 
     [currUser]="true" [(cards)]="cards"></app-full-card>
+
+<app-binder-create [(shown)]="creatingBinder" 
+    [cards]="cards"></app-binder-create>

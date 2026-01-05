@@ -7,6 +7,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FullCard } from '../full-card/full-card';
+import { Binder } from '../binder-page/binder-page';
+import { BinderCreate } from '../binder-create/binder-create';
+import { RouterLink } from '@angular/router';
 
 export interface WikiCard {
   id: string,
@@ -29,13 +32,14 @@ export enum Effect {
 @Component({
   selector: 'app-collection-page',
   imports: [MatCardModule, MatDividerModule, MatButtonToggleModule, 
-    MatButtonModule, MatIconModule, FullCard],
+    MatButtonModule, MatIconModule, FullCard, BinderCreate, RouterLink],
   templateUrl: './collection-page.html',
   styleUrl: './collection-page.css',
 })
 export class CollectionPage {
   firebase = inject(Firebase);
   cards: WikiCard[] = [];
+  binders: Binder[] = [];
 
   loading = true;
   lastDoc: DocumentSnapshot | null = null;
@@ -46,10 +50,15 @@ export class CollectionPage {
 
   selectedCard: WikiCard | undefined;
   selected = false;
+  creatingBinder = false;
 
   showFullCard(card: WikiCard) {
     this.selectedCard = card;
     this.selected = true;
+  }
+
+  showBinderCreate() {
+    this.creatingBinder = true;
   }
 
   private reloadEffect = effect(() => {
@@ -57,6 +66,7 @@ export class CollectionPage {
     this.cards = [];
     this.lastDoc = null;
     this.loadCards();
+    this.loadBinders();
   });
 
   async loadCards() {
@@ -67,6 +77,8 @@ export class CollectionPage {
         docs = await this.firebase.loadCollection(this.lastDoc, this.loadLimit);
       } else if (this.selectedSort === "Date") {
         docs = await this.firebase.loadCollectionByDate(this.lastDoc, this.loadLimit);
+      } else if (this.selectedSort === "Effect") {
+        docs = await this.firebase.loadCollectionByEffect(this.lastDoc, this.loadLimit);
       } else {
         docs = await this.firebase.loadCollectionByStar(this.lastDoc, this.loadLimit);
       }
@@ -119,5 +131,9 @@ export class CollectionPage {
     e.stopPropagation();
     card.starred = false;
     this.firebase.unstarCard(card.id);
+  }
+
+  async loadBinders() {
+    this.binders = await this.firebase.loadUserBinders();
   }
 }

@@ -1,7 +1,7 @@
 <div class="container">
     @if (profile !== null) {
         <div class="header">
-            <img class="pfp" [src]="profile.pfp ?? 'default-card.png'"/>
+            <img class="pfp" [src]="profile.pfp ?? 'default-pfp.png'"/>
             <div class="profile-info">
                 <h1>{{ profile.username }}</h1>
                 <h3>Member since {{ profile.joined.toDateString() }}</h3>

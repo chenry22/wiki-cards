@@ -7,6 +7,7 @@ import { CollectionPage } from './collection-page/collection-page';
 import { ProfilePage } from './profile-page/profile-page';
 import { BuyPackPage } from './buy-pack-page/buy-pack-page';
 import { CommunityPage } from './community-page/community-page';
+import { BinderPage } from './binder-page/binder-page';
 
 export const routes: Routes = [
     { path: '', component: TimerPage },
@@ -15,6 +16,7 @@ export const routes: Routes = [
     { path: 'buy_packs', component: BuyPackPage },
 
     { path: 'profile/:username', component: ProfilePage },
+    { path: 'binder/:binder_id', component: BinderPage },
     { path: 'packs', component: PacksPage }, 
     { path: 'collection', component: CollectionPage },
     { path: 'sign_in', component: AccountPage },

@@ -1,0 +1,71 @@
+<div class="container">
+    @if (binder === null && !loading) {
+        <b>[ This binder is private or does not exist ]</b>
+    } @else {
+        <div class="header">
+            <div class="row">
+                <h1>{{ binder?.title ?? "Loading..." }}</h1>
+                @if (currUser()) {
+                    <button matButton="filled">Edit</button>
+                }
+            </div>
+            <p><a [routerLink]="'/profile/' + binder?.username">{{ binder?.username }}</a>'s binder &nbsp;&nbsp;|&nbsp;&nbsp; Last updated {{ binder?.lastUpdated }}</p>
+        </div>
+
+        <div id="binder" [style.background-color]="binder?.color">
+            <div class="page left">
+                @for (card of leftPage; track $index) {
+                    @if (card === null) {
+                        <mat-card class="card-outline"></mat-card>
+                    } @else {
+                        <div class="card">
+                            <div class="white-background"></div>
+                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card, true)">
+                                <mat-card-title>{{ card.title }}</mat-card-title>
+                                <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                            </mat-card>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- disappears on smaller screen widths -->
+            <div class="page right">
+                @for (card of rightPage; track $index) {
+                    @if (card === null) {
+                        <mat-card class="card-outline"></mat-card>
+                    } @else {
+                        <div class="card">
+                            <div class="white-background"></div>
+                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card, false)">
+                                <mat-card-title>{{ card.title }}</mat-card-title>
+                                <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                            </mat-card>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+
+        <div class="page-change-mobile">
+            @if (pageNum > 0) {
+                <button (click)="pageChangeLeft(1)"><</button>
+            }
+            @if (pageHasCards(pageNum + 1)) {
+                <button (click)="pageChangeRight(1)">></button>
+            }
+        </div>
+        <div class="page-change">
+            @if (pageNum > 0) {
+                <button (click)="pageChangeLeft(2)"><</button>
+            }
+            @if (pageHasCards(pageNum + 2)) {
+                <button (click)="pageChangeRight(2)">></button>
+            }
+        </div>
+    }
+</div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="false" [(cards)]="cards"></app-full-card>
