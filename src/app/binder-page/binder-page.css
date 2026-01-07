@@ -123,3 +123,7 @@
         display: none;
     }
 }
+
+.page-label {
+    text-align: center;
+}

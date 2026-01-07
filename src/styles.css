@@ -294,7 +294,7 @@ body { margin: 0; }
 .holo::before {
     content: "";
     position: absolute;
-    inset: -30%;
+    inset: -40%;
 
     background:
         linear-gradient(

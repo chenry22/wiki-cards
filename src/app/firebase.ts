@@ -645,4 +645,24 @@ export class Firebase {
       }
     })
   }
+
+  async editBinder(binderID: string, newBinderName: string, editedCards: Map<string, number>) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return false
+    }
+    
+    let batch = writeBatch(this.firestore);
+    batch.update(doc(this.firestore, 'binders', binderID), {
+      title: newBinderName
+    })
+    editedCards.forEach((index, cardID) => {
+      batch.update(doc(this.firestore, 'binders', binderID, 'cards', cardID), {
+        index: index
+      })
+    })
+    await batch.commit();
+    return true;
+  }
 }

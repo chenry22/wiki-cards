@@ -4,9 +4,22 @@
     } @else {
         <div class="header">
             <div class="row">
-                <h1>{{ binder?.title ?? "Loading..." }}</h1>
+                @if (isEditing()) {
+                    <mat-form-field class="title">
+                        <mat-label>Binder Title</mat-label>
+                        <input [(ngModel)]="newBinderName" matInput>
+                    </mat-form-field>
+                } @else {
+                    <h1>{{ binder?.title ?? "Loading..." }}</h1>
+                }
+
                 @if (currUser()) {
-                    <button matButton="filled">Edit</button>
+                    @if (!isEditing()) {
+                        <button matButton="filled" (click)="beginEditing()">Edit</button>
+                    } @else {
+                        <button matButton="filled" (click)="saveEdit()">Save</button>
+                        <button matButton="filled" (click)="cancelEdit()">Cancel</button>
+                    }
                 }
             </div>
             <p><a [routerLink]="'/profile/' + binder?.username">{{ binder?.username }}</a>'s binder &nbsp;&nbsp;|&nbsp;&nbsp; Last updated {{ binder?.lastUpdated }}</p>
@@ -16,11 +29,13 @@
             <div class="page left">
                 @for (card of leftPage; track $index) {
                     @if (card === null) {
-                        <mat-card class="card-outline"></mat-card>
+                        <mat-card class="card-outline" (click)="swapCard({ index: $index })"></mat-card>
                     } @else {
                         <div class="card">
                             <div class="white-background"></div>
-                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card, true)">
+                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" 
+                                (click)="isEditing() ? swapCard(card) : showFullCard(card, true)">
+
                                 <mat-card-title>{{ card.title }}</mat-card-title>
                                 <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
                             </mat-card>
@@ -33,11 +48,12 @@
             <div class="page right">
                 @for (card of rightPage; track $index) {
                     @if (card === null) {
-                        <mat-card class="card-outline"></mat-card>
+                        <mat-card class="card-outline" (click)="swapCard({ index: $index + 9 })"></mat-card>
                     } @else {
                         <div class="card">
                             <div class="white-background"></div>
-                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card, false)">
+                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" 
+                                (click)="isEditing() ? swapCard(card) : showFullCard(card, true)">
                                 <mat-card-title>{{ card.title }}</mat-card-title>
                                 <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
                             </mat-card>
@@ -52,7 +68,7 @@
             @if (pageNum > 0) {
                 <button (click)="pageChangeLeft(1)"><</button>
             }
-            @if (pageHasCards(pageNum + 1)) {
+            @if (pageHasCards(pageNum + 1) || isEditing()) {
                 <button (click)="pageChangeRight(1)">></button>
             }
         </div>
@@ -60,9 +76,15 @@
             @if (pageNum > 0) {
                 <button (click)="pageChangeLeft(2)"><</button>
             }
-            @if (pageHasCards(pageNum + 2)) {
+            @if (pageHasCards(pageNum + 2) || isEditing()) {
                 <button (click)="pageChangeRight(2)">></button>
             }
+        </div>
+        <div class="page-change-mobile">
+            [ Page {{ pageNum + 1 }} ]
+        </div>
+        <div class="page-change">
+            [ Pages {{ pageNum + 1 }} - {{ pageNum + 2 }} ]
         </div>
     }
 </div>
