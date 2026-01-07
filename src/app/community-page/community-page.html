@@ -22,6 +22,24 @@
     </div>
 
     <div>
+        <h1>Recent Binders</h1>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="binders">
+        @for (binder of binders; track binder.id) {
+            <a class="binder" [routerLink]="'/binder/' + binder.id">
+                <div [style.background-color]="binder.color">
+                    <img src="binder.png"/>
+                </div>
+                <h2>{{ binder.title }}</h2>
+                <div><i>Last updated {{ timeSince(binder.lastUpdated) }} ago</i></div>
+            </a>
+        } @empty {
+            <div>[ None ]</div>
+        }
+    </div>
+
+    <div>
         <h1>Recent Packs</h1>
     </div>
     <mat-divider></mat-divider>

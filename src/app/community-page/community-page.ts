@@ -6,6 +6,7 @@ import { Profile } from '../profile-page/profile-page';
 import { Effect, WikiCard } from '../collection-page/collection-page';
 import { Firebase } from '../firebase';
 import { FullCard } from '../full-card/full-card';
+import { Binder } from '../binder-page/binder-page';
 
 @Component({
   selector: 'app-community-page',
@@ -18,6 +19,7 @@ export class CommunityPage {
   
   profiles: Profile[] = [];
   cards: any[] = [];
+  binders: Binder[] = [];
 
   selectedCard: WikiCard | undefined;
   selected = false;
@@ -30,10 +32,15 @@ export class CommunityPage {
   constructor() {
     this.loadProfiles();
     this.loadRecentCards();
+    this.loadBinders();
   }
 
   async loadProfiles() {
     this.profiles = await this.firebase.loadRandomProfiles(10);
+  }
+
+  async loadBinders() {
+    this.binders = await this.firebase.loadRecentBinders(10);
   }
 
   async loadRecentCards() {

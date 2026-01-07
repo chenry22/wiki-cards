@@ -655,7 +655,8 @@ export class Firebase {
     
     let batch = writeBatch(this.firestore);
     batch.update(doc(this.firestore, 'binders', binderID), {
-      title: newBinderName
+      title: newBinderName,
+      lastUpdated: new Date()
     })
     editedCards.forEach((index, cardID) => {
       batch.update(doc(this.firestore, 'binders', binderID, 'cards', cardID), {
@@ -664,5 +665,24 @@ export class Firebase {
     })
     await batch.commit();
     return true;
+  }
+
+  async loadRecentBinders(lim: number) {
+    let q = await query(collection(this.firestore, "binders"),
+      where('private', '==', false), orderBy('lastUpdated', 'desc'), limit(lim)
+    );
+    let binders = await getDocs(q);
+    return binders.docs.map((doc) => {
+      let data = doc.data();
+      return {
+        id: doc.id,
+        username: data['username'],
+        private: data['private'],
+        lastUpdated: data['lastUpdated'].toDate(),
+        title: data['title'],
+        color: data['color'],
+        cards: []
+      }
+    })
   }
 }

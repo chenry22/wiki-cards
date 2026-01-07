@@ -95,3 +95,42 @@
     padding: 10px;
     max-height: 70%;
 }
+
+
+
+.binders {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.binder {
+    text-decoration: none;
+    color: inherit;
+    padding: 14px;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+
+    transition: transform .4s ease-in-out;
+}
+.binder h2 {
+    margin: 0;
+}
+.binder:hover {
+    cursor: pointer;
+    background-color: rgba(162, 201, 233, 0.1);
+    transform: rotate(1deg);
+}
+.binder div {
+    border-radius: 10px;
+}
+.binder img {
+    mix-blend-mode: hard-light;
+    max-height: 24dvh;
+    padding: 8px;
+}
