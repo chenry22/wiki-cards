@@ -1,12 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { Firebase } from '../firebase';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { WikiCard } from '../collection-page/collection-page';
 import { MatCardModule } from '@angular/material/card';
 import { FullCard } from '../full-card/full-card';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 export interface Binder {
   id: string
@@ -21,16 +22,17 @@ export interface Binder {
 @Component({
   selector: 'app-binder-page',
   imports: [MatCardModule, FullCard, RouterLink, 
-    MatButtonModule, FormsModule, MatInputModule],
+    MatButtonModule, FormsModule, MatInputModule, MatCheckboxModule],
   templateUrl: './binder-page.html',
   styleUrl: './binder-page.css',
 })
 export class BinderPage {
   firebase = inject(Firebase);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   
   binderID = '';
-  binder: Binder | null = null;
+  binders: WritableSignal<Array<Binder | null>> = signal([]);
   loading = true;
 
   leftPage: Array<any | null> = new Array(9).fill(null);
@@ -43,10 +45,17 @@ export class BinderPage {
 
   private editing = false;
   newBinderName = '';
+  newBinderColor = 'white';
+  newBinderPrivacy = false;
   private cardsCopy: any[] = [];
   editedCards: Map<string, number> = new Map(); // card id -> new index.
 
   firstCard: any | null = null;
+
+  binderReload = effect(() => {
+    // when binder signal updates
+    this.loadPage(this.pageNum);
+  });
 
   showFullCard(card: WikiCard, left: boolean) {
     this.cards = left ? this.leftPage : this.rightPage;
@@ -55,7 +64,6 @@ export class BinderPage {
   }
   
   constructor() {
-    console.log('binder')
     // Access route parameters
     this.route.params.subscribe(params => {
       this.binderID = params['binder_id'] || '';
@@ -64,7 +72,7 @@ export class BinderPage {
   }
 
   async loadBinder() {
-    this.binder = await this.firebase.loadBinder(this.binderID);
+    this.binders.set([await this.firebase.loadBinder(this.binderID)]);
     this.loadPage(0);
     this.loading = false;
   }
@@ -73,7 +81,7 @@ export class BinderPage {
     this.pageNum = pageNum;
     this.leftPage.fill(null);
     this.rightPage.fill(null);
-    this.binder?.cards.forEach((card) => {
+    this.binders()[0]?.cards.forEach((card) => {
       if (card.index >= pageNum * 9 && card.index < (pageNum + 1) * 9) {
         this.leftPage[card.index - pageNum * 9] = card;
       } else if (card.index >= (pageNum + 1) * 9 && card.index <= (pageNum + 2) * 9) {
@@ -83,7 +91,7 @@ export class BinderPage {
   }
 
   pageHasCards(pageNum: number) {
-    return this.binder?.cards.filter((card) => {
+    return this.binders()[0]?.cards.filter((card) => {
       if (card.index >= pageNum * 9) {
         return true;
       }
@@ -99,7 +107,7 @@ export class BinderPage {
   }
 
   currUser() {
-    return this.firebase.username() === this.binder?.username;
+    return this.firebase.username() === this.binders()[0]?.username;
   }
 
   isEditing() {
@@ -108,27 +116,30 @@ export class BinderPage {
   beginEditing() {
     this.firstCard = null;
     this.editing = true;
-    this.newBinderName = this.binder?.title ?? '';
-    this.cardsCopy = this.binder!.cards.map(x => Object.assign({}, x));
+    this.newBinderName = this.binders()[0]?.title ?? '';
+    this.newBinderColor = this.binders()[0]?.color ?? 'white';
+    this.newBinderPrivacy = this.binders()[0]?.private ?? false;
+    this.cardsCopy = this.binders()[0]!.cards.map(x => Object.assign({}, x));
   }
   cancelEdit() {
     this.editing = false;
-    this.newBinderName = this.binder?.title ?? '';
     this.editedCards.clear();
-    this.binder!.cards = this.cardsCopy;
+    this.binders()[0]!.cards = this.cardsCopy;
     this.loadPage(this.pageNum);
   }
   async saveEdit() {
     // commit  to firebase, if successful change local
-    if (await this.firebase.editBinder(this.binderID, this.newBinderName, this.editedCards)) {
-      this.binder!.title = this.newBinderName;
+    if (await this.firebase.editBinder(this.binderID, this.newBinderName, this.newBinderColor, this.newBinderPrivacy, this.editedCards)) {
+      this.binders()[0]!.title = this.newBinderName;
+      this.binders()[0]!.color = this.newBinderColor;
+      this.binders()[0]!.private = this.newBinderPrivacy;
       this.editing = false;
       this.loadPage(this.pageNum);
     }
   }
 
   swapCard(card: any) {
-    if (!this.editing || (this.firstCard?.index ?? -1) == card.index || this.binder === null) { return; }
+    if (!this.editing || (this.firstCard?.index ?? -1) == card.index || this.binders()[0] === null) { return; }
     if (this.firstCard == null) {
       // set up first swap
       this.firstCard = card;
@@ -144,26 +155,35 @@ export class BinderPage {
       let firstCardIndex = this.firstCard.index;
       let secondCardIndex = index;
 
-      console.log(firstCardIndex, secondCardIndex);
-
-      let arrFirstCard = this.binder.cards.findIndex((card) => {
+      let arrFirstCard = this.binders()[0]!.cards.findIndex((card) => {
         return card.index == firstCardIndex;
       });
-      let arrSecondCard = this.binder.cards.findIndex((card) => {
+      let arrSecondCard = this.binders()[0]!.cards.findIndex((card) => {
         return card.index == secondCardIndex;
       });
 
       if (arrFirstCard > -1) {
-        this.binder.cards[arrFirstCard].index = secondCardIndex;
-        this.editedCards.set(this.binder.cards[arrFirstCard].id, secondCardIndex);
+        this.binders()[0]!.cards[arrFirstCard].index = secondCardIndex;
+        this.editedCards.set(this.binders()[0]?.cards[arrFirstCard].id, secondCardIndex);
       }
       if (arrSecondCard > -1) {
-        this.binder.cards[arrSecondCard].index = firstCardIndex;
-        this.editedCards.set(this.binder.cards[arrSecondCard].id, firstCardIndex);
+        this.binders()[0]!.cards[arrSecondCard].index = firstCardIndex;
+        this.editedCards.set(this.binders()[0]?.cards[arrSecondCard].id, firstCardIndex);
       }
 
       this.firstCard = null;
       this.loadPage(this.pageNum);
+    }
+  }
+
+  async deleteBinder() {
+    if (confirm("Are you sure you want to delete this binder? This action cannot be undone.")) {
+      let err = await this.firebase.deleteBinder(this.binders()[0]!)
+      if (err === undefined) {
+        this.router.navigateByUrl('/collection')
+      } else {
+        alert(err);
+      }
     }
   }
 }

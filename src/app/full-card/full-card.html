@@ -30,6 +30,11 @@
                 <mat-icon>remove</mat-icon>
                 <span>Remove from featured</span>
             </button>
+        } @else if (binderPage()) {
+            <button mat-menu-item (click)="removeFromBinder()">
+                <mat-icon>remove</mat-icon>
+                <span>Remove from binder</span>
+            </button>
         } @else {
             <button mat-menu-item (click)="card()?.starred ? unstarCard() : starCard()">
                 <mat-icon>{{ card()?.starred ? 'star' : 'star_outline' }}</mat-icon>
@@ -39,6 +44,9 @@
                 <mat-icon>style</mat-icon>
                 <span>Add to featured</span>
             </button>
+            @if (binders().length > 0) {
+                <button mat-menu-item [matMenuTriggerFor]="binderMenu">Add to binder</button>
+            }
             <button mat-menu-item (click)="sellCard()">
                 <mat-icon>toll</mat-icon>
                 <span>Sell card ({{ cardSellValue() }})</span>
@@ -48,5 +56,14 @@
             <mat-icon>account_circle</mat-icon>
             <span>Set as profile picture</span>
         </button>
+    </mat-menu>
+
+    <mat-menu #binderMenu="matMenu">
+        @for (binder of binders(); track binder.id) {
+            <button mat-menu-item (click)="addToBinder(binder)">
+                <mat-icon>add_circle</mat-icon>
+                <span>{{ binder.title }}</span>
+            </button>
+        }
     </mat-menu>
 }

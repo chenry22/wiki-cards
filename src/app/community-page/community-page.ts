@@ -7,6 +7,9 @@ import { Effect, WikiCard } from '../collection-page/collection-page';
 import { Firebase } from '../firebase';
 import { FullCard } from '../full-card/full-card';
 import { Binder } from '../binder-page/binder-page';
+import { DocumentSnapshot } from '@angular/fire/firestore';
+
+const CARD_LOAD_COUNT = 30;
 
 @Component({
   selector: 'app-community-page',
@@ -20,6 +23,8 @@ export class CommunityPage {
   profiles: Profile[] = [];
   cards: any[] = [];
   binders: Binder[] = [];
+
+  lastCard: DocumentSnapshot | null = null;
 
   selectedCard: WikiCard | undefined;
   selected = false;
@@ -44,16 +49,36 @@ export class CommunityPage {
   }
 
   async loadRecentCards() {
-    let allCards = await this.firebase.loadRecentCards(30);
+    let snapshotDocs = await this.firebase.loadRecentCards(CARD_LOAD_COUNT, this.lastCard);
+    if (snapshotDocs.length === CARD_LOAD_COUNT) {
+      this.lastCard = snapshotDocs[snapshotDocs.length - 1];
+    } else {
+      this.lastCard = null;
+    }
+
+    let snapshotToCards = snapshotDocs.map((doc) => {
+      let data = doc.data();
+      return {
+        id: doc.id,
+        username: data['username'],
+
+        title: data['title'],
+        thumbnail: data['thumbnail'],
+        link: data['link'],
+        rarity: this.firebase.rarityNumberToString(data['rarity']),
+        effect: data['effect'],
+        created: data['created'].toDate(),
+      };
+    })
     let cards: any[] = [];
-    allCards.forEach((card) => {
+    snapshotToCards.forEach((card) => {
       if (cards.length === 0 || Math.abs(cards[cards.length - 1][0].created.getTime() - card.created.getTime()) > 100) {
         cards.push([card])
       } else {
         cards[cards.length - 1].push(card)
       }
     })
-    this.cards = cards;
+    this.cards = this.cards.concat(cards);
   }
 
   // Source - https://stackoverflow.com/a

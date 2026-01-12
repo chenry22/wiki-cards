@@ -1,5 +1,5 @@
 .container {
-    margin: 30px 50px;
+    margin: 24px 40px;
 }
 
 .content-header {
@@ -102,6 +102,7 @@
     padding: 10px 0;
     display: flex;
     align-items: center;
+    overflow: auto hidden;
 }
 
 .binder {
@@ -133,4 +134,20 @@
     mix-blend-mode: hard-light;
     max-height: 24dvh;
     padding: 8px;
+}
+
+.load-more {
+    margin: auto;
+    background-color: rgb(31, 31, 123);
+    color: white;
+    border: 2px outset black;
+    border-radius: 10px;
+    font-weight: bold;
+    padding: 10px;
+}
+.load-more:hover {
+    background-color: rgb(52, 58, 166);
+}
+.load-more:active {
+    border: 2px inset black;
 }

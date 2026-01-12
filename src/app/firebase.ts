@@ -491,7 +491,7 @@ export class Firebase {
   }
 
   async loadRandomProfiles(lim: number) {
-    var q = await query(collection(this.firestore, "users"),
+    var q = query(collection(this.firestore, "users"),
         orderBy('joined', 'desc'), limit(lim),
       )
     var snapshot = await getDocs(q);
@@ -507,25 +507,17 @@ export class Firebase {
     return profiles;
   }
 
-  async loadRecentCards(lim: number) {
-    var q = await query(collection(this.firestore, 'cards'),
+  async loadRecentCards(lim: number, lastDoc: DocumentSnapshot | null) {
+    var q = query(collection(this.firestore, 'cards'),
       orderBy('created', 'desc'), limit(lim)
     );
+    if(lastDoc) {
+      q = query(collection(this.firestore, 'cards'),
+        orderBy('created', 'desc'), limit(lim), startAfter(lastDoc)
+      );
+    }
     var snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => {
-      let data = doc.data();
-      return {
-        id: doc.id,
-        username: data['username'],
-
-        title: data['title'],
-        thumbnail: data['thumbnail'],
-        link: data['link'],
-        rarity: this.rarityNumberToString(data['rarity']),
-        effect: data['effect'],
-        created: data['created'].toDate(),
-      };
-    })
+    return snapshot.docs
   }
 
   async loadBinder(binderID: string) : Promise<Binder | null> {
@@ -539,7 +531,7 @@ export class Firebase {
       return null;
     }
 
-    let q = await query(collection(this.firestore, "binders", binderID, "cards"),
+    let q = query(collection(this.firestore, "binders", binderID, "cards"),
       orderBy('index', 'asc')
     );
     let cards = await getDocs(q);
@@ -627,7 +619,7 @@ export class Firebase {
       return [];
     }
 
-    let q = await query(collection(this.firestore, "binders"),
+    let q = query(collection(this.firestore, "binders"),
       where('username', '==', username)
     );
     let binders = await getDocs(q);
@@ -646,7 +638,7 @@ export class Firebase {
     })
   }
 
-  async editBinder(binderID: string, newBinderName: string, editedCards: Map<string, number>) {
+  async editBinder(binderID: string, newBinderName: string, newBinderColor: string, newBinderPrivacy: boolean, editedCards: Map<string, number>) {
     var username = this.username();
     if (username === null) {
       console.log("No user logged in...");
@@ -656,6 +648,8 @@ export class Firebase {
     let batch = writeBatch(this.firestore);
     batch.update(doc(this.firestore, 'binders', binderID), {
       title: newBinderName,
+      color: newBinderColor,
+      private: newBinderPrivacy,
       lastUpdated: new Date()
     })
     editedCards.forEach((index, cardID) => {
@@ -668,7 +662,7 @@ export class Firebase {
   }
 
   async loadRecentBinders(lim: number) {
-    let q = await query(collection(this.firestore, "binders"),
+    let q = query(collection(this.firestore, "binders"),
       where('private', '==', false), orderBy('lastUpdated', 'desc'), limit(lim)
     );
     let binders = await getDocs(q);
@@ -684,5 +678,82 @@ export class Firebase {
         cards: []
       }
     })
+  }
+
+  async addToBinder(card: WikiCard | undefined, binder: any) {
+    var username = this.username();
+    if (card == null) { 
+      return "Invalid card"; 
+    }
+    if (username === null) {
+      return "You must be logged in to do this"
+    } else if (username !== binder.username) {
+      return "You don't own this binder";
+    }
+
+    let q = query(collection(this.firestore, "binders", binder.id, 'cards'),
+      orderBy('index', 'desc'), limit(1)
+    );
+    let docs = await getDocs(q);
+
+    if(docs.empty) {
+      // index = 0
+      await setDoc(doc(this.firestore, 'binders', binder.id, 'cards', card.id), 
+        {
+          rarity: this.rarityStringToNumber(card.rarity),
+          wiki_id: card.wiki_id,
+          title: card.title,
+          link: card.link,
+          thumbnail: card.thumbnail,
+          created: card.created,
+          effect: card.effect,
+          index: 0
+        }
+      )
+    } else {
+      let index = docs.docs[0].data()['index'] + 1
+      await setDoc(doc(this.firestore, 'binders', binder.id, 'cards', card.id), 
+        {
+          id: card.id,
+          rarity: this.rarityStringToNumber(card.rarity),
+          wiki_id: card.wiki_id,
+          title: card.title,
+          link: card.link,
+          thumbnail: card.thumbnail,
+          created: card.created,
+          effect: card.effect,
+          index: index
+        }
+      )
+    }
+    return undefined;
+  }
+
+  async removeFromBinder(card: WikiCard | undefined, binder: any) {
+    var username = this.username();
+    var id = card?.id;
+    if (id == null) { 
+      return "Invalid card"; 
+    }
+    if (username === null) {
+      return "You must be logged in to do this"
+    } else if (username !== binder.username) {
+      return "You don't own this binder";
+    }
+
+    await deleteDoc(doc(this.firestore, 'binders', binder.id, 'cards', id))
+    return undefined;
+  }
+
+  async deleteBinder(binder: Binder) {
+    var username = this.username();
+    if (username === null) {
+      return "You must be logged in to do this"
+    } else if (username !== binder.username) {
+      return "You don't own this binder";
+    }
+
+    await deleteDoc(doc(this.firestore, 'binders', binder.id))
+    return undefined
   }
 }

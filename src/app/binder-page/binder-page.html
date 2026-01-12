@@ -1,16 +1,26 @@
 <div class="container">
-    @if (binder === null && !loading) {
+    @if (binders()[0] === null && !loading) {
         <b>[ This binder is private or does not exist ]</b>
     } @else {
         <div class="header">
             <div class="row">
                 @if (isEditing()) {
-                    <mat-form-field class="title">
-                        <mat-label>Binder Title</mat-label>
-                        <input [(ngModel)]="newBinderName" matInput>
-                    </mat-form-field>
+                    <div class="col">
+                        <mat-form-field class="title">
+                            <mat-label>Binder Title</mat-label>
+                            <input [(ngModel)]="newBinderName" matInput>
+                        </mat-form-field>
+
+                        <div class="row"> 
+                            <label for="color">
+                                Binder Color
+                                <input name="color" [(ngModel)]="newBinderColor" type="color"/>
+                            </label>
+                            <mat-checkbox [(ngModel)]="newBinderPrivacy">Private Binder</mat-checkbox>
+                        </div>
+                    </div>
                 } @else {
-                    <h1>{{ binder?.title ?? "Loading..." }}</h1>
+                    <h1>{{ binders()[0]?.title ?? "Loading..." }}</h1>
                 }
 
                 @if (currUser()) {
@@ -19,13 +29,14 @@
                     } @else {
                         <button matButton="filled" (click)="saveEdit()">Save</button>
                         <button matButton="filled" (click)="cancelEdit()">Cancel</button>
+                        <button matButton="filled" color="red" (click)="deleteBinder()">Delete</button>
                     }
                 }
             </div>
-            <p><a [routerLink]="'/profile/' + binder?.username">{{ binder?.username }}</a>'s binder &nbsp;&nbsp;|&nbsp;&nbsp; Last updated {{ binder?.lastUpdated }}</p>
+            <p><a [routerLink]="'/profile/' + binders()[0]?.username">{{ binders()[0]?.username }}</a>'s binder &nbsp;&nbsp;|&nbsp;&nbsp; Last updated {{ binders()[0]?.lastUpdated }}</p>
         </div>
 
-        <div id="binder" [style.background-color]="binder?.color">
+        <div id="binder" [style.background-color]="binders()[0]?.color">
             <div class="page left">
                 @for (card of leftPage; track $index) {
                     @if (card === null) {
@@ -90,4 +101,6 @@
 </div>
 
 <app-full-card [(card)]="selectedCard" [(shown)]="selected" 
-    [currUser]="false" [(cards)]="cards"></app-full-card>
+    [currUser]="firebase.username() === binders()[0]?.username" 
+    [(cards)]="cards" [binderPage]="true"
+    [(binders)]="binders"></app-full-card>

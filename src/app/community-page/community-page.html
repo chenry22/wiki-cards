@@ -32,7 +32,7 @@
                     <img src="binder.png"/>
                 </div>
                 <h2>{{ binder.title }}</h2>
-                <div><i>Last updated {{ timeSince(binder.lastUpdated) }} ago</i></div>
+                <div><i>Updated {{ timeSince(binder.lastUpdated) }} ago</i></div>
             </a>
         } @empty {
             <div>[ None ]</div>
@@ -58,6 +58,10 @@
             </div>
         } @empty {
             <span>[ None found ]</span>
+        }
+        
+        @if (lastCard !== null) {
+            <button class="load-more" (click)="loadRecentCards()">Load More</button>
         }
     </div>
 </div>

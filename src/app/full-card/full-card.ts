@@ -21,7 +21,11 @@ export class FullCard {
   card = model<WikiCard>();
   currUser = input(false);
   cards = model<WikiCard[]>();
-  profilePage = input(false);
+  binders = model<any[]>([]); // for collection page
+
+  profilePage = input(false); // for profile page
+  binderPage = input(false); // for binder page
+
   desc = 'Loading...';
 
 
@@ -178,6 +182,37 @@ export class FullCard {
         })
       )
       this.shown.set(false);
+    }
+  }
+
+  async addToBinder(binder: any) {
+    let err = await this.firebase.addToBinder(this.card(), binder);
+    if (err !== undefined) {
+      alert(err);
+    } else {
+      this.hideCard();
+      alert("Successfully added to binder!")
+    }
+  }
+
+  async removeFromBinder() {
+    if (!confirm("Remove card from binder?")) {
+      return;
+    }
+    let err = await this.firebase.removeFromBinder(this.card(), this.binders()[0]);
+    if (err === undefined) {
+      // remove
+      console.log(this.binders()[0].cards)
+      let newCards = this.binders()[0].cards.filter((c: any) => { 
+        return c.id != this.card()?.id }
+      );
+      let newBinder = this.binders()[0];
+      newBinder.cards = newCards;
+
+      this.binders.set([newBinder]);
+      this.hideCard();
+    } else {
+      alert(err);
     }
   }
 }
