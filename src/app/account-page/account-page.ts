@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { Firebase } from '../firebase';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { onAuthStateChanged } from '@angular/fire/auth';
+import { MatDividerModule } from '@angular/material/divider';
 
 interface User {
   username: string,
@@ -11,13 +12,14 @@ interface User {
 
 @Component({
   selector: 'app-account-page',
-  imports: [FormsModule],
+  imports: [FormsModule, MatDividerModule],
   templateUrl: './account-page.html',
   styleUrl: './account-page.css',
 })
 export class AccountPage {
   firebase = inject(Firebase);
   nav = inject(Router);
+  private route = inject(ActivatedRoute);
 
   username = "";
   email: string = "";
@@ -32,15 +34,20 @@ export class AccountPage {
         this.nav.navigateByUrl("");
       }
     });
+
+    this.route.data.subscribe(data => {
+      this.signIn = !data['create'];
+    });
   }
 
   async login() {
     this.loading = true;
-    if (this.email === "") {
-      alert("Please enter your email")
-    } else if (this.password === "") {
-      alert("Please enter a password")
-    } else if (await this.firebase.signIn(this.email, this.password)) {
+    if (this.email === "" || this.password === "") {
+      this.loading = false;
+      return;
+    }
+    
+    if (await this.firebase.signIn(this.email, this.password)) {
       this.nav.navigateByUrl("");
     } else {
       alert("Unrecognized email or password");

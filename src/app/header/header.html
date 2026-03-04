@@ -3,7 +3,6 @@
         <button matIconButton class="toolbar-icon" aria-label="Menu">
             <mat-icon>menu</mat-icon>
         </button>
-        <span [matMenuTriggerFor]="menu">Menu</span>
     </span>
 
     <mat-menu #menu="matMenu">
@@ -15,12 +14,20 @@
 
     <span class="title"><a routerLink="/">WikiCards</a></span>
 
-    <span class="menu-item" [matMenuTriggerFor]="profile">
-        <button matIconButton class="toolbar-icon" aria-label="Person">
-            <mat-icon>person</mat-icon>
-        </button>
-        <span class="username">{{ firebase.username() ?? 'Not logged in' }}</span>
-    </span>
+    @if (firebase.username() === null) {
+        <span class="menu-item right links">
+            <a class="username" routerLink="/create_account">Create account</a>
+            <span style="width: 20px"></span>
+            <a class="username" routerLink="/sign_in">Log in</a>
+        </span>
+    } @else {
+        <span class="menu-item right" [matMenuTriggerFor]="profile">
+            <span class="username">{{ firebase.username() ?? 'Not logged in' }}</span>
+            <button matIconButton class="toolbar-icon" aria-label="Person">
+                <mat-icon>person</mat-icon>
+            </button>
+        </span>
+    }
 
     <mat-menu #profile="matMenu">
         @if (firebase.username() === null) {

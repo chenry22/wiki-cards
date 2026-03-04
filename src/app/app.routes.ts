@@ -8,9 +8,11 @@ import { ProfilePage } from './profile-page/profile-page';
 import { BuyPackPage } from './buy-pack-page/buy-pack-page';
 import { CommunityPage } from './community-page/community-page';
 import { BinderPage } from './binder-page/binder-page';
+import { HomePage } from './home-page/home-page';
 
 export const routes: Routes = [
-    { path: '', component: TimerPage },
+    { path: '', component: HomePage },
+    { path: 'timer', component: TimerPage},
     { path: 'community', component: CommunityPage },
     { path: 'pack/:pack_id', component: PackPage }, 
     { path: 'buy_packs', component: BuyPackPage },
@@ -19,7 +21,9 @@ export const routes: Routes = [
     { path: 'binder/:binder_id', component: BinderPage },
     { path: 'packs', component: PacksPage }, 
     { path: 'collection', component: CollectionPage },
-    { path: 'sign_in', component: AccountPage },
 
-    { path: '**', component: AccountPage }
+    { path: 'sign_in', component: AccountPage },
+    { path: 'create_account', component: AccountPage, data: { create:true }},
+
+    { path: '**', component: HomePage }
 ];

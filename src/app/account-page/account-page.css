@@ -1,33 +1,51 @@
 .main {
-    padding: 40px 60px;
+    padding: 10px 50px;
     text-align: center;
 }
 
 .main form {
     display: flex;
+    text-align: left;
+
     flex-direction: column;
     gap: 20px;
-    justify-content: center;
-    align-items: center;
+    margin-top: 20px;
+    justify-content: left;
+    align-items: start;
 }
 .main form input {
-    margin-left: 4px;
+    border: 1px solid black;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 300px;
+    margin-top: 6px;
 }
 
 .submit {
+    font-size: 12px;
+    min-width: 320px;
     font-weight: bold;
-    border-radius: 10px;
-    background-color: white;
+    color: white;
+    background-color: rgb(48, 85, 173);
     border: 1px solid skyblue;
     padding: 10px;
     margin: 2px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 .submit:hover {
-    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-    transform: translate(1px, 1px);
-    background-color: aliceblue;
+    background-color: rgb(29, 61, 135);
 }
-.submit:click {
-    background-color: lightblue;
+
+.title {
+    text-align: left;
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-weight: normal;
+}
+
+.swap {
+    margin-top: 0;
+    color: rgb(48, 85, 173);
+}
+.swap:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }

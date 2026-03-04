@@ -10,7 +10,7 @@
 html, body { 
     height: 100dvh;
     overflow: auto;
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(255, 255, 255);
 }
 body { margin: 0; }
 

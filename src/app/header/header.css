@@ -1,6 +1,5 @@
 .title {
-    width: 100%;
-    text-align: center;
+    text-align: left;
 }
 .title a {
     font-size: larger;
@@ -15,19 +14,37 @@ mat-toolbar {
     top: 0;
     z-index: 10;
     
-    height: 50px;
+    height: 60px;
     background-color: rgb(255, 255, 255);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 mat-icon {
     color: black;
 }
 
+.username {
+    font-size: medium;
+}
+
+.links a {
+    text-decoration: none;
+    color: rgb(53, 66, 168);
+}
+.links a:hover {
+    text-decoration: underline;
+}
+
 .menu-item {
+    margin: 0 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+
+.right {
+    flex: 1 0 0;
+    justify-content: right;
+    text-align: right;
 }
 
 @media (max-width: 600px) {
