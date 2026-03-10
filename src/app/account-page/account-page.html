@@ -15,7 +15,7 @@
             </label>
 
             @if (!loading) {
-                <button type="submit" class="submit" (click)="login()">Log in</button>
+                <button type="submit" class="wiki-button submit" (click)="login()">Log in</button>
                 <a class="swap" (click)="swapView()">Switch to create account</a>
             }
         </form>
@@ -40,7 +40,7 @@
             </label>
 
             @if (!loading) {
-                <button class="submit" (click)="signUp()">Create account</button>
+                <button class="wiki-button submit" (click)="signUp()">Create account</button>
                 <a class="swap" (click)="swapView()">Switch to log in</a>
             }
         </form>

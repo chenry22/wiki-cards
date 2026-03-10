@@ -3,22 +3,30 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Firebase } from '../firebase';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-timer-page',
-  imports: [MatIconModule, MatButtonModule, MatInputModule],
+  imports: [MatIconModule, MatButtonModule, FormsModule],
   templateUrl: './timer-page.html',
   styleUrl: './timer-page.css',
 })
 export class TimerPage {
   firebase = inject(Firebase);
+
+  goal = '';
+  goals: string[] = [];
+
+  completed: string[] = [];
+  claimed = false;
   
   private increment = 5 * 60;
   private minTime = 15 * 60;
   private maxTime = 180 * 60;
 
   private timeRemaining = signal(30 * 60);
-  private timerInit = signal(30 * 60)
+  private timerInit = signal(30 * 60);
+  private timerEnd = signal(0);
   private timerId: number | null = null;
 
   private cardTimeRewardRate = 60 * 10;
@@ -38,6 +46,27 @@ export class TimerPage {
   paused = false;
   private packAvailable = false;
 
+  addGoal() {
+    if (this.goal.length > 0) {
+      this.goals.push(this.goal);
+      this.goal = '';
+    }
+  }
+  removeGoal(goal: string) {
+    this.goals = this.goals.filter((val) => { 
+      return val != goal 
+    })
+  }
+  completeGoal(goal: string) {
+    this.removeGoal(goal);
+    this.completed.push(goal);
+  }
+  removeCompleted(goal: string) {
+    this.completed = this.completed.filter((val) => { 
+      return val != goal 
+    })
+  }
+  
   isPackAvailable() {
     return this.packAvailable; //this.packAvailable;
   }
@@ -46,14 +75,13 @@ export class TimerPage {
     // create new doc in firebase users/packs
     if (this.isPackAvailable()) {
       this.packAvailable = false;
-      if (await this.firebase.createPack(this.cardReward)){
-        alert("Pack redeemed!");
+      if (await this.firebase.completeSession(this.timerEnd() - this.timerInit(), this.cardReward, this.goals)){
         this.timerActive = false;
+        this.claimed = true;
       } else {
         alert("Failed to redeem pack. Please try again.");
         this.packAvailable = true;
       }
-      this.packAvailable = false;
     }
   }
 
@@ -82,25 +110,30 @@ export class TimerPage {
   }
 
   beginTimer() {
-    if (this.packAvailable) { return; }
+    if (this.packAvailable) { 
+      alert("Please claim your pack to end your current session!");
+      return; 
+    }
+
     if (!this.timerActive || this.paused) {
+      this.claimed = false;
       this.timerActive = true;
       this.paused = false;
-      if (this.timerId == null) {
-        // means we're starting a whole new timer
-        // otherwise we have a previous valid timer that was paused, so just continue that
-        this.timerInit.set(this.timeRemaining());
-      }
+      let curr = (new Date()).getTime() / 1000;
+
+      this.timerEnd.set(curr + this.timeRemaining())
+      let t = Math.ceil(this.timerEnd() - curr);
+      this.timeRemaining.set(t);
+
       var timerID = setInterval(() => {
-        this.timeRemaining.update((time) => {
-          if (time <= 1) {
-            clearInterval(timerID);
-            this.timerId = null;
-            this.packAvailable = true;
-            return 0;
-          }
-          return time - 1;
-        });
+        let t = Math.ceil(this.timerEnd() - (new Date()).getTime() / 1000);
+        if (t <= 1) {
+          clearInterval(timerID);
+          this.timerId = null;
+          this.packAvailable = true;
+        } else {
+          this.timeRemaining.set(t - 1);
+        }
       }, 1000);
       this.timerId = timerID;
     }

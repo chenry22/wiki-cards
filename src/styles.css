@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --card-border-width: 5px;
+    --card-border-width: 2.5px;
 }
 
 * {
@@ -13,6 +13,21 @@ html, body {
     background-color: rgb(255, 255, 255);
 }
 body { margin: 0; }
+
+.wiki-button {
+    font-size: 12px;
+    min-width: 320px;
+    font-weight: bold;
+    color: white;
+    background-color: rgb(48, 85, 173);
+    border: 1px solid skyblue;
+    padding: 10px;
+    margin: 2px;
+}
+.wiki-button:hover {
+    background-color: rgb(29, 61, 135);
+    cursor: pointer;
+}
 
 
 

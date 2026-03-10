@@ -1,0 +1,121 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.circular-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: rotate(-1deg);
+    }
+    100% {
+        transform: rotate(1deg);
+    }
+}
+
+
+.icon-container {
+    z-index: 0;
+    position: relative;
+    width: 300px;
+}
+
+
+@keyframes gradient-shift {
+    to {
+        filter: hue-rotate(360deg);
+    }
+}
+.gradient {
+    position: absolute;
+    width: 120%;
+    transform: translateX(-10%);
+    height: 100%;
+    background: radial-gradient(circle farthest-side at center center, #ff000055, white);
+
+    animation: gradient-shift 10s ease infinite alternate;
+}
+
+.icon {
+    max-width: calc(100% - 48px);
+    max-height: calc(100% - 72px);
+    margin: 36px 24px;
+    animation: wiggle 2.5s ease-in-out infinite alternate;
+    transition: scale 0.8s ease-in-out;
+}
+.icon:hover {
+    cursor: pointer;
+    scale: 1.02;
+}
+
+.links {
+    z-index: 1;
+    height: 380px;
+    color: rgb(46, 46, 184);
+    font-weight: bold;
+    font-size: 16px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.links div {
+    padding: 8px 10px;
+    text-align: center;
+}
+.links p {
+    margin: 0;
+}
+.links div:hover a {
+    text-decoration: underline;
+}
+.links div:hover {
+    cursor: pointer;
+    background-color: rgb(238, 238, 238);
+}
+
+.left {
+    align-items: end;
+    text-align: right;
+}
+.right {
+    align-items: start;
+    text-align: left;
+}
+.pad {
+    margin: 0 40px;
+}
+
+.title {
+    z-index: 1;
+    font-size: 48px;
+    font-variant: small-caps;
+    margin-bottom: 0;
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    font-weight: normal;
+}
+
+.dis {
+    color: darkgray;
+    cursor: default;
+    text-decoration: none;
+}
+.dis:hover {
+    cursor: default !important;
+}
+.dis:hover a {
+    text-decoration: none !important;
+}
+
+.subtitle {
+    font-weight: normal;
+    font-size: 12px;
+    color: rgb(134, 134, 134);
+    text-decoration: none;
+}

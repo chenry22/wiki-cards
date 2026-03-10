@@ -24,15 +24,6 @@
 .submit {
     font-size: 12px;
     min-width: 320px;
-    font-weight: bold;
-    color: white;
-    background-color: rgb(48, 85, 173);
-    border: 1px solid skyblue;
-    padding: 10px;
-    margin: 2px;
-}
-.submit:hover {
-    background-color: rgb(29, 61, 135);
 }
 
 .title {

@@ -16,8 +16,8 @@
 
 
 .content {
-    margin: 30px 50px;
-    padding-bottom: 40px;
+    margin: 0;
+    padding-bottom: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -37,7 +37,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     margin: 20px;
-    gap: 20px;
+    gap: 2dvw;
     align-items: center;
     justify-content: center;
 }
@@ -48,8 +48,8 @@ h1 {
     width: 100%;
 }
 .cards mat-card {
-    width: 200px;
-    height: 300px;
+    width: 170px;
+    height: 270px;
     padding: 20px 24px;
     position: relative;
     overflow: hidden;
@@ -78,21 +78,21 @@ h1 {
 }
 
 .cards mat-card img {
-    max-height: 200px;
+    max-height: 180px;
     max-width: 90%;
     object-fit: contain;
     margin: 14px auto;
-    border-radius: 2px;
 }
 
 .cards mat-card-title {
-    font-size: 1.5em;
+    font-size: 1.3em;
+    line-height: normal;
 }
 
 .cards mat-card-subtitle {
     color: inherit;
     font-weight: normal;
-    font-size: small;
+    font-size: 12px;
     font-style: italic;
 }
 
@@ -126,8 +126,7 @@ mat-card-content {
 .binder {
     text-decoration: none;
     color: inherit;
-    padding: 14px;
-    border-radius: 8px;
+    padding: 12px;
 
     display: flex;
     flex-direction: column;
@@ -139,17 +138,15 @@ mat-card-content {
 }
 .binder h2 {
     margin: 0;
+    font-size: 16px;
 }
 .binder:hover {
     cursor: pointer;
     background-color: rgba(162, 201, 233, 0.1);
     transform: rotate(1deg);
 }
-.binder div {
-    border-radius: 10px;
-}
 .binder img {
     mix-blend-mode: hard-light;
-    max-height: 24dvh;
+    max-height: 20dvh;
     padding: 8px;
 }

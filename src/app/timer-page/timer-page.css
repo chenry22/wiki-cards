@@ -1,12 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 #content {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 48px;
 
+    justify-content: center;
     align-items: center;
     padding-top: 40px;
+    margin: 0 40px 60px;
 }
 
 .timer {
@@ -17,26 +18,24 @@
     gap: 20px;
 
     padding: 40px;
-    background-color: rgb(7, 8, 10);
-    border-radius: 36px;
+    background-color: rgb(249, 249, 249);
+    border: 1.5px solid rgb(226, 226, 226);
 }
 
 #time {
-    font-family: "Quantico", sans-serif;
-    padding: 80px 40px;
+    padding: 70px 28px;
     width: 240px;
     text-align: center;
-    background-color: rgb(255, 255, 255);
-    font-size: 2.5rem;
+    background-color: white;
+    border: 1.5px solid rgb(226, 226, 226);
+
+    font-size: 2rem;
     letter-spacing: 0.1em;
-    border-radius: 14px;
 }
 @media (max-width: 600px) {
     #time {
-        font-size: 2rem;
         letter-spacing: 0.08em;
-        width: 50dvw;
-        padding: 60px 35px;
+        padding: 64px 30px;
     }
 }
 
@@ -55,10 +54,91 @@
 }
 
 mat-icon {
-    color: white;
+    color: black;
     transform: scale(1.8);
 }
 
+.goal-div {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+}
 .goal-input {
-    width: 60%;
+    width: calc(100% - 12px);
+    padding: 6px;
+    border: 1px solid rgb(94, 94, 94);
+    background-color: white;
+}
+
+.goal-add {
+    position: absolute;
+    font-weight: bold;
+    top: -6px;
+    right: -10px;
+    background-color: rgb(209, 223, 240);
+    border: 1.5px solid rgb(165, 176, 190);
+    border-radius: 100%;
+    cursor: pointer;
+}
+.goal-add:hover {
+    background-color: rgb(192, 209, 228);
+}
+
+.goal {
+    border: 1.5px solid rgb(209, 223, 240);
+    background-color: rgb(245, 249, 254);
+    padding: 12px 20px;
+    min-width: 320px;
+    max-width: 460px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+ul {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.completed-list {
+    margin-bottom: 10px;
+}
+
+.goals-list {
+    color: rgb(65, 115, 165);
+    font-style: italic;
+    max-height: 140px;
+    overflow: auto;
+}
+.goals-list button {
+    margin-left: 10px;
+    float: right;
+}
+.goals-list li {
+    padding: 6px 0;
+}
+.goals-list li p {
+    margin: 0;
+    max-width: 200px;
+    float: left;
+    word-wrap: break-word;
+    text-wrap: wrap;
+}
+.goals-list li:hover {
+    color: rgb(81, 137, 193);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.section-header {
+    border: 1.5px solid rgb(165, 176, 190);
+    font-weight: bolder;
+    font-size: large;
+    background-color: rgb(209, 223, 240);
+    padding: 6px 10px;
+}
+
+.claim {
+    min-width: 200px;
+    margin-top: 14px;
 }

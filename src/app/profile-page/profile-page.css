@@ -1,8 +1,8 @@
 .container {
-    margin: 24px 50px;
+    margin: 10px 50px;
+    padding-bottom: 100px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
     max-width: 92vw;
     height: calc(100dvh - 110px);
 }
@@ -11,27 +11,182 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 30px;
+    gap: 14px;
+    margin: 10px 0;
 }
-.header h3 {
-    font-style: italic;
+
+.user-badge {
+    margin-left: 4px;
+    color: white;
+    border: 1.5px solid rgb(8, 8, 41);
+    background-color: rgb(38, 38, 103);
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 4px 8px;
+}
+
+.username {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif; 
+    font-weight: normal;
+    font-size: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.navigate {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+    border-bottom: 1.5px solid rgb(220, 220, 220);
+}
+.navigate p {
+    padding: 8px 8px 4px;
+    margin: 0;
+    color: rgb(33, 33, 125)
+}
+.navigate p:hover {
+    cursor: pointer;
+    border-bottom: 2px solid darkslategray;
+}
+
+.header {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif; 
     font-weight: normal;
 }
-.header img {
-    height: 20vh;
-    min-height: 100px;
-    aspect-ratio: 1;
-    border-radius: 100px;
-    object-fit: cover;
 
-    background-color: aliceblue;
-    border: 2px solid darkblue;
+.active {
+    border-bottom: 2px solid darkslategray;
+    color: black !important;
+}
+.active:hover {
+    cursor: default !important;
+}
+
+.box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+}
+
+.edit-bio {
+    font-weight: normal;
+    font-size: small;
+    margin-left: 6px;
+}
+.edit-bio:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.colored {
+    color: rgb(71, 71, 200);
+}
+
+.edited-bio {
+    margin-top: 10px;
+    width: 48vw;
+    font-size: 14px;
+}
+
+.save-bio {
+    border: 1px solid gray;
+    background-color: rgb(241, 241, 241);
+    margin-top: 8px;
+    padding: 4px 8px;
+    width: fit-content;
+}
+.save-bio:hover {
+    cursor: pointer;
+    background-color: rgb(234, 234, 234);
+}
+
+.about {
+    margin: 0;
+    margin-top: 10px;
+    padding: 0;
+    max-width: 48vw;
+}
+
+.stats {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stats h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.pfp-container {
+    float: right;
+    text-align: center;
+    background-color: rgb(252, 252, 252);
+    padding: 8px 10px;
+    border: 1.5px solid rgb(184, 181, 181);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.pfp-container p {
+    margin: 0;
+    padding: 0;
+}
+.pfp {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.subtitle {
+    font-size: 12px;
+}
+
+@media (max-width: 800px) {
+    .box {
+        justify-content: center;
+    }
+    .about {
+        max-width: none;
+    }
+    .pfp {
+        max-height: 240px;
+    }
 }
 
 
 .divider {
     height: 0px;
     border: 1px solid rgba(99, 99, 99, 0.4);
+}
+
+.featured {
+    margin-top: 40px;
+}
+.featured h1 {
+    font-size: 26px;
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif; 
+    font-weight: normal;
+    margin: 0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.count {
+    font-family: default;
+    font-size: small;
+    font-weight: bold;
+    padding: 2px 4px;
+
+    border: 1.5px solid rgb(171, 171, 171);
+    background-color: rgb(248, 248, 248);
 }
 
 .card-container {
@@ -43,20 +198,19 @@
     display: flex;
     flex-direction: row;
     padding: 8px;
-    gap: 30px;
-    height: 40%;
+    gap: 24px;
+    margin-bottom: 40px;
 }
 
 .cards mat-card {
     position: relative;
     overflow: hidden;
 
-    box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.1);
     background-color: white;
-    border-radius: 4px;
-    padding: 20px;
-    min-width: 200px;
-    max-width: 200px;
+    padding: 16px;
+    width: 14vw;
+    min-width: 160px;
 
     justify-content: center;
     align-items: center;
@@ -64,26 +218,25 @@
 
     display: flex;
     justify-content: space-evenly;
-    gap: 20px;
+    gap: 14px;
     flex-direction: column;
     transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 .cards mat-card:hover {
     cursor: pointer;
     transform: translate(2px, -2px);
-    box-shadow: -5px 5px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: -5px 5px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cards mat-card img {
-    object-fit: cover;
-    max-height: 26dvh;
+    object-fit: contain;
+    min-height: 150px;
+    height: 18dvw;
+    max-height: 260px;
+    max-width: 100%;
 }
 .cards mat-card-title {
+    font-size: 1.15rem;
+    line-height: normal;
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
-}
-
-@media (max-width: 720px) {
-    .header img {
-        height: 16dvh;
-    }
 }

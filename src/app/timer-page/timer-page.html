@@ -29,19 +29,55 @@
         </div>
     </div>
 
-    <p>Write a goal for this session!</p>
-    <mat-form-field class="goal-input">
-        <mat-label>My goal</mat-label>
-        <input matInput>
-    </mat-form-field>
+    <div class="goal">
+        <div class="section-header">My Goals</div>
+        <div>Write some goals for this session!</div>
 
-    @if (isPackAvailable()) {
-        <button (click)="claimPack()" matButton="filled">Claim Pack</button>
-    }
+        <div class="goal-div">
+            <textarea class="goal-input" [(ngModel)]="goal" 
+                name="text" rows="3" wrap="soft" style=" resize: none"
+                placeholder="What do you want to do with your time?" [ngModelOptions]="{standalone: true}">
+            </textarea>
+            <button class="goal-add" (click)="addGoal()">+</button>
+        </div>
 
-    @if (firebase.username()) {
-        <span><i>[ Reward: {{ cardReward }} cards ]</i></span>
-    } @else {
-        <span><i>[ No reward. Log in to earn packs! ]</i></span>
-    }
+        <ul class="goals-list">
+            @for (goal of goals; track $index;) {
+                <li>
+                    <p>{{ goal }}</p>
+                    <button (click)="removeGoal(goal)">Delete</button>
+                    <button (click)="completeGoal(goal)">Complete!</button>
+                </li>
+            }
+        </ul>
+
+        <div class="section-header">Reward</div>
+        <ul>
+            @if (firebase.username()) {
+                <li>You will earn {{ cardReward }} cards for this session!</li>
+            } @else {
+                <li>Log in/create an account to earn packs!</li>
+            }
+
+            <li style="margin-top: 10px;"><b>Completed Goals:</b></li>
+            <ul class="completed-list">
+                @for (goal of completed; track $index;) {
+                    <li>
+                        <p>{{ goal }}</p>
+                        <button (click)="removeCompleted(goal)">Remove</button>
+                    </li>
+                } @empty {
+                    <li>[ None ]</li>
+                }
+            </ul>
+
+            @if (isPackAvailable()) {
+                <button (click)="claimPack()" class="wiki-button claim">Claim Pack</button>
+            } @else if (claimed) {
+                <li><i>Pack claimed!</i></li>
+            } @else {
+                <li><i>Claim your pack once your timer ends!</i></li>
+            }
+        </ul>
+    </div>
 </div>

@@ -1,4 +1,7 @@
 <div class="content">
+    <h1 class="title">My Packs</h1>
+    <mat-divider class="title-divider"></mat-divider>
+
     @if (firebase.username() === null && loading) {
         <div>
             <p>Loading...</p>
@@ -8,25 +11,37 @@
             <p>[ Not logged in ]</p>
         </div>
     } @else {
-        <div class="pack-scroll">
-            @for (pack of packs; track pack.id) {
-                <div (click)="redeemPack(pack.id)" class="pack">
-                    <img src="card-pack.png"/>
-                    <p>[ {{ pack.cards }} cards ]</p>
-                    <p><i>Created {{ pack.created}}</i></p>
-                </div>
-            } @empty {
-                @if (loading) {
-                    <div>
-                        <p>Loading...</p>
+        <div class="scroll-container" #packScroll (scroll)="onScrollPacks()">
+            <div class="pack-scroll">
+                @for (pack of packs; track $index) {
+                    <div (click)="redeemPack(pack.id)" 
+                        [class.active]="$index === activeIndex" #pack
+                        class="pack">
+                        <img src="card-pack.png"/>
+                        <p class="pack-label">{{ pack.cards }} cards</p>
+                        <p><i>Created {{ pack.created }}</i></p>
                     </div>
+                } @empty {
+                    @if (loading) {
+                        <div>
+                            <p>Loading...</p>
+                        </div>
+                    }
                 }
-            }
-
-            <a routerLink="/buy_packs" class="buy-more">
-                <mat-icon aria-hidden="false" aria-label="Buy More">add_circle</mat-icon>
-                <p>Buy More Packs</p>
-            </a>
+            </div>
         </div>
+
+        <a (click)="togglePackShop()" class="buy-more">Buy More Packs</a>
     }
+</div>
+
+<div id="pack-shop" class="buy-packs hidden">
+    <button class="exit-button" (click)="togglePackShop()">X</button>
+    <h2 class="balance">Balance: {{ balance }} coins</h2>
+    <p><i>Earn coins by selling cards you don't want! Cards with higher rarities or special effects are worth more.</i></p>
+    <div class="pack-buy-buttons">
+        <button (click)="buyOneCardPack()">Buy Pack of 1<br><span class='cost'>({{ oneCardPackCost }} coins)</span></button>
+        <button (click)="buyThreeCardPack()">Buy Pack of 3<br><span class='cost'>({{ threeCardPackCost }} coins)</span></button>
+        <button (click)="buyFiveCardPack()">Buy Pack of 5<br><span class='cost'>({{ fiveCardPackCost }} coins)</span></button>
+    </div>
 </div>

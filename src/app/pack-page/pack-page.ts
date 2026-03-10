@@ -135,7 +135,7 @@ export class PackPage  {
 
   async claimPack() {
     // go back to timer? basically just any cleanup and finish
-    this.router.navigateByUrl('');
+    this.router.navigateByUrl('collection');
   }
 
   commitSwipe(direction: 'left' | 'right') {

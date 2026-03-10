@@ -1,1 +1,59 @@
-<p>home-page works!</p>
+<div class="container">
+    <p class="title">WikiCards</p>
+    <div class="circular-nav">
+        <div class="links left">
+            <div routerLink="/timer">
+                <a>Timer</a><br>
+                <span class="subtitle">Do tasks, earn packs!</span>
+            </div>
+            <div routerLink="/packs" class="pad">
+                <a>Packs</a><br>
+                <span class="subtitle">Open or buy more packs!</span>
+            </div>
+            <div routerLink="/community" class="pad">
+                <a>Users</a><br>
+                <span class="subtitle">Discover other users! </span>
+            </div>
+            <div routerLink="/community">
+                <a>Feed</a><br>
+                <span class="subtitle">See recent cards found!</span>
+            </div>
+        </div>
+        <div class="icon-container">
+            <div class="gradient"></div>
+            <img class="icon" (click)="claimDailyPack()" src="card-pack.png"/>
+        </div>
+        <div class="links right">
+            <div [routerLink]="'/profile/' + firebase.username()">
+                <a>Profile</a><br>
+                <span class="subtitle">Your public info!</span>
+            </div>
+            <div [routerLink]="'/profile/' + firebase.username() + '/collection'" class="pad">
+                <a>Collection</a><br>
+                <span class="subtitle">All your cards and binders!</span>
+            </div>
+            <div class="dis pad">
+                <a>Trades</a><br>
+                <span class="subtitle">Coming soon...</span>
+            </div>
+            <div class="dis">
+                <a>About</a><br>
+                <span class="subtitle">Coming soon...</span>
+            </div>
+        </div>
+    </div>
+
+    @if (loading) {
+        <mat-spinner diameter=20 active-indicator-color="#ffffff"/>
+    } @else if (!loggedIn) {
+        <button class="wiki-button" style="background-color: rgb(175, 175, 175); border: 1px solid rgb(158, 158, 158);">Log in to open packs</button>
+    } @else if (claimed) {
+        <button class="wiki-button">Claimed!</button>
+    } @else if (hoursTilDailyPack <= 0) {
+        <button class="wiki-button" (click)="claimDailyPack()">Claim Daily Pack</button>
+    } @else {
+        <button class="wiki-button">
+        Daily Pack Available in {{ hoursTilDailyPack }} hours
+        </button>
+    }
+</div>

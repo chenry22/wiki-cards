@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { Firebase } from '../firebase';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { MatCardModule } from '@angular/material/card';
@@ -41,6 +41,9 @@ export class CollectionPage {
   cards: WikiCard[] = [];
   binders: Binder[] = [];
 
+  username = input<string>('');
+  currentUser = input<boolean>(false);
+
   loading = true;
   lastDoc: DocumentSnapshot | null = null;
   selectedSort = "Star";
@@ -71,48 +74,47 @@ export class CollectionPage {
 
   async loadCards() {
     this.loading = true;
-    if (this.firebase.username() != null) {
-      var docs;
-      if (this.selectedSort === "Rarity") {
-        docs = await this.firebase.loadCollection(this.lastDoc, this.loadLimit);
-      } else if (this.selectedSort === "Date") {
-        docs = await this.firebase.loadCollectionByDate(this.lastDoc, this.loadLimit);
-      } else if (this.selectedSort === "Effect") {
-        docs = await this.firebase.loadCollectionByEffect(this.lastDoc, this.loadLimit);
-      } else {
-        docs = await this.firebase.loadCollectionByStar(this.lastDoc, this.loadLimit);
-      }
-      this.moreCards = docs.length >= this.loadLimit;
-      this.lastDoc = docs[docs.length - 1];
 
-      docs.forEach((card) => {
-        var data = card.data();
-        var r = data['rarity'];
-        if (r == 0) {
-          r = "common"
-        } else if (r == 1) {
-          r = "uncommon";
-        } else if (r == 2) {
-          r = "rare";
-        } else if (r == 3) {
-          r = "epic"
-        } else if (r == 4) {
-          r = "legendary"
-        }
-        this.cards.push({
-          id: card.id,
-          rarity: r,
-          wiki_id: data['id'],
-          title: data['title'],
-          link: data['link'],
-          thumbnail: data['thumbnail'],
-          created: data['created'].toDate().toDateString(),
-          starred: data['starred'],
-          effect: data['effect'] ?? Effect.none
-        });
-      });
-      this.loading = false;
+    var docs;
+    if (this.selectedSort === "Rarity") {
+      docs = await this.firebase.loadCollection(this.username(), this.lastDoc, this.loadLimit);
+    } else if (this.selectedSort === "Date") {
+      docs = await this.firebase.loadCollectionByDate(this.username(), this.lastDoc, this.loadLimit);
+    } else if (this.selectedSort === "Effect") {
+      docs = await this.firebase.loadCollectionByEffect(this.username(), this.lastDoc, this.loadLimit);
+    } else {
+      docs = await this.firebase.loadCollectionByStar(this.username(), this.lastDoc, this.loadLimit);
     }
+    this.moreCards = docs.length >= this.loadLimit;
+    this.lastDoc = docs[docs.length - 1];
+
+    docs.forEach((card) => {
+      var data = card.data();
+      var r = data['rarity'];
+      if (r == 0) {
+        r = "common"
+      } else if (r == 1) {
+        r = "uncommon";
+      } else if (r == 2) {
+        r = "rare";
+      } else if (r == 3) {
+        r = "epic"
+      } else if (r == 4) {
+        r = "legendary"
+      }
+      this.cards.push({
+        id: card.id,
+        rarity: r,
+        wiki_id: data['id'],
+        title: data['title'],
+        link: data['link'],
+        thumbnail: data['thumbnail'],
+        created: data['created'].toDate().toDateString(),
+        starred: data['starred'],
+        effect: data['effect'] ?? Effect.none
+      });
+    });
+    this.loading = false;
   }
 
   async changeSort(v: string ) {
@@ -124,16 +126,18 @@ export class CollectionPage {
 
   async starCard(card: any, e: MouseEvent) {
     e.stopPropagation();
+    if(!this.currentUser()) { return; }
     card.starred = true;
     this.firebase.starCard(card.id);
   }
   async unstarCard(card: any, e: MouseEvent) {
     e.stopPropagation();
+    if(!this.currentUser()) { return; }
     card.starred = false;
     this.firebase.unstarCard(card.id);
   }
 
   async loadBinders() {
-    this.binders = await this.firebase.loadUserBinders();
+    this.binders = await this.firebase.loadUserBinders(this.username());
   }
 }

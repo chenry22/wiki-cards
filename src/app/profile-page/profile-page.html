@@ -1,31 +1,82 @@
 <div class="container">
-    @if (profile !== null) {
+    @if (!notFound) {
         <div class="header">
-            <img class="pfp" [src]="profile.pfp ?? 'default-pfp.png'"/>
-            <div class="profile-info">
-                <h1>{{ profile.username }}</h1>
-                <h3>Member since {{ profile.joined.toDateString() }}</h3>
-            </div>
+            <mat-icon>format_list_bulleted</mat-icon>
+            <button class="user-badge">User</button>
+            <h1 class="username">{{ profile.username }}</h1>
         </div>
 
-        <div class="divider"></div>
+        <mat-divider></mat-divider>
 
-        <div class="featured">
-            <h2>Featured Cards ({{ profile.featured.length }} / 5)</h2>
-            <div class="card-container">
-                <div class="cards">
-                    @for (card of profile.featured; track card.id) {
-                        <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
-                            <mat-card-title>{{ card.title }}</mat-card-title>
-                            <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
-                            <mat-card-footer><i>[ Collected {{ card.created }} ]</i></mat-card-footer>
-                        </mat-card>
-                    } @empty {
-                        <p>[ None ]</p>
+        <div class="navigate">
+            <p [class.active]="tab === 'about'" (click)="showTab('about')">About</p>
+            <p [class.active]="tab === 'collection'" (click)="showTab('collection')">Collection</p>
+
+            @if (currentUser) {
+                <p [class.active]="tab === 'sessions'" (click)="showTab('sessions')">Sessions</p>
+            }
+        </div>
+
+        <div [class.hidden]="tab !== 'about'">
+            <div class="box">
+                <div class="pfp-container">
+                    <p><b>{{ profile.username }}'s profile picture</b></p>
+                    <img class="pfp" [src]="profile.pfp ?? 'default-pfp.png'"/>
+                    <p class="subtitle"><i>An accurate depiction of this user...</i></p>
+                </div>
+
+                <div class="stats">
+                    <h2>
+                        Bio
+                        @if (currentUser) {
+                            <span class="edit-bio" (click)="toggleEditBio()">[ 
+                                <span class='colored'>{{ !editingBio ? 'edit' : 'cancel' }}</span> ]
+                            </span>
+                        }
+                    </h2>
+
+                    @if (editingBio) {
+                        <textarea class="edited-bio" [(ngModel)]="editedBio" 
+                            name="text" rows="3" wrap="soft" style="resize: none"
+                            placeholder="My bio..." [ngModelOptions]="{standalone: true}">
+                        </textarea>
+                        <button class="save-bio" (click)="saveBio()">Save</button>
+                    } @else {
+                        <p class="about">{{ stats.bio.length > 0 ? stats.bio : '[ No bio ]' }}</p>
                     }
+
+                    <div style="height: 36px"></div>
+                    <h2>Stats</h2>
+                    <ul>
+                        <li>Member since {{ profile.joined.toDateString() }}</li>
+                        <li>{{ stats.packs }} packs opened</li>
+                        <li>{{ stats.cards }} cards collected</li>
+                        <li>{{ stats.coins}} coins</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="featured">
+                <h1>Featured Cards <span class="count">{{ profile.featured.length }} / 5</span></h1>
+                <mat-divider></mat-divider>
+
+                <div class="card-container">
+                    <div class="cards">
+                        @for (card of profile.featured; track card.id) {
+                            <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                                <mat-card-title>{{ card.title }}</mat-card-title>
+                                <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
+                            </mat-card>
+                        } @empty {
+                            <p>[ None ]</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
+
+        <app-collection-page [class.hidden]="tab !== 'collection'"
+            [username]="profile.username" [currentUser]="currentUser"></app-collection-page>
     } @else {
         <p>[ This user does not exist ]</p>
     }

@@ -1,5 +1,6 @@
 .title {
     text-align: left;
+    flex-grow: 100;
 }
 .title a {
     font-size: larger;

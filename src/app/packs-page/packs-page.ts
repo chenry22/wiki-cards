@@ -1,11 +1,12 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, effect, ElementRef, inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Firebase } from '../firebase';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-packs-page',
-  imports: [MatIconModule, RouterLink],
+  imports: [MatDividerModule],
   templateUrl: './packs-page.html',
   styleUrl: './packs-page.css',
 })
@@ -15,6 +16,32 @@ export class PacksPage implements OnInit {
 
   packs: any[] = [];
   loading = true;
+
+  @ViewChild('packScroll') packContainer!: ElementRef;
+  @ViewChildren('pack') packRefs!: QueryList<ElementRef>;
+  activeIndex = 0;
+
+  onScrollPacks() {
+    console.log('scroll')
+    const container = this.packContainer.nativeElement;
+    const center = container.scrollLeft + container.offsetWidth / 2;
+
+    let closest = 0;
+    let minDistance = Infinity;
+
+    this.packRefs.forEach((item, index) => {
+      const el = item.nativeElement;
+      const itemCenter = el.offsetLeft + el.offsetWidth / 2;
+      const dist = Math.abs(center - itemCenter);
+
+      if (dist < minDistance) {
+        minDistance = dist;
+        closest = index;
+      }
+    });
+
+    this.activeIndex = closest;
+  }
 
   private reloadEffect = effect(() => {
     // when username signal updates, this will reload packs for the found user
@@ -43,5 +70,44 @@ export class PacksPage implements OnInit {
 
   redeemPack(id: string) {
     this.router.navigateByUrl('/pack/' + id);
+  }
+
+
+  // buying more packs...
+  balance = 0;
+  readonly oneCardPackCost = 30;
+  readonly threeCardPackCost = 60;
+  readonly fiveCardPackCost = 90;
+
+
+  togglePackShop() {
+    let shop = document.getElementById('pack-shop');
+    if(shop?.classList.contains('hidden')) {
+      shop.classList.remove('hidden');
+    } else {
+      shop?.classList.add('hidden');
+    }
+  }
+
+  async loadBalance() {
+    if (this.firebase.username() !== null) {
+      this.balance = await this.firebase.loadBalance();
+    }
+  }
+
+  async buyOneCardPack() {
+    if (confirm("Buy pack of 1?") && await this.firebase.buyPack(1, this.oneCardPackCost)) {
+      this.balance -= this.oneCardPackCost;
+    }
+  }
+  async buyThreeCardPack() {
+    if (confirm("Buy pack of 3?") && await this.firebase.buyPack(3, this.threeCardPackCost)) {
+      this.balance -= this.threeCardPackCost;
+    }
+  }
+  async buyFiveCardPack() {
+    if (confirm("Buy pack of 5?") && await this.firebase.buyPack(5, this.fiveCardPackCost)) {
+      this.balance -= this.fiveCardPackCost;
+    }
   }
 }

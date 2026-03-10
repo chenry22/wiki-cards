@@ -57,6 +57,18 @@ export class Firebase {
     await signOut(this.auth);
   }
 
+  async completeSession(seconds: number, cardReward: number, goals: string[]) {
+    var username = this.username();
+    if (username === null) { 
+      return false; 
+    }
+
+    await addDoc(collection(this.firestore, "users", username, "sessions"), 
+      { minutes: Math.round(seconds / 60), goals: goals, completed: new Date() }
+    );
+    return await this.createPack(cardReward);
+  }
+
   async createPack(cards: number) {
     var username = this.username();
     if (username === null) { 
@@ -165,17 +177,18 @@ export class Firebase {
     
     // delete pack (cannot double redeem)
     batch.delete(doc(this.firestore, "users", username, "packs", packID));
+
+    // update profile stats
+    batch.update(doc(this.firestore, "users", username), {
+      packs: increment(1),
+      cards: increment(cards.length)
+    })
+
     await batch.commit();
     console.log("Pack opened! (batch committed)")
   }
 
-  async loadCollection(lastDoc: DocumentSnapshot | null, lim: number = 5) {
-    var username = this.username();
-    if (username === null) {
-      console.log("No user logged in...");
-      return [];
-    }
-    
+  async loadCollection(username: string, lastDoc: DocumentSnapshot | null, lim: number = 5) {
     var q = query(collection(this.firestore, "cards"), 
       where('username', '==', username),
       orderBy("rarity", 'desc'), limit(lim)
@@ -191,13 +204,7 @@ export class Firebase {
     var snapshot = await getDocs(q);
     return snapshot.docs;
   }
-  async loadCollectionByDate(lastDoc: DocumentSnapshot | null, lim: number = 5) {
-    var username = this.username();
-    if (username === null) {
-      console.log("No user logged in...");
-      return [];
-    }
-    
+  async loadCollectionByDate(username: string, lastDoc: DocumentSnapshot | null, lim: number = 5) {
     var q = query(collection(this.firestore, "cards"), 
       where('username', '==', username),
       orderBy("created", 'desc'), limit(lim)
@@ -213,13 +220,7 @@ export class Firebase {
     var snapshot = await getDocs(q);
     return snapshot.docs;
   }
-  async loadCollectionByEffect(lastDoc: DocumentSnapshot | null, lim: number = 5) {
-    var username = this.username();
-    if (username === null) {
-      console.log("No user logged in...");
-      return [];
-    }
-
+  async loadCollectionByEffect(username: string, lastDoc: DocumentSnapshot | null, lim: number = 5) {
     var q = query(collection(this.firestore, "cards"), 
         where('username', '==', username), where("effect", "!=", "none"),
         orderBy("effect", 'desc'), orderBy("created", 'desc'), limit(lim)
@@ -235,13 +236,7 @@ export class Firebase {
     var snapshot = await getDocs(q);
     return snapshot.docs;
   }
-  async loadCollectionByStar(lastDoc: DocumentSnapshot | null, lim: number = 5) {
-    var username = this.username();
-    if (username === null) {
-      console.log("No user logged in...");
-      return [];
-    }
-    
+  async loadCollectionByStar(username: string, lastDoc: DocumentSnapshot | null, lim: number = 5) {
     var q = query(collection(this.firestore, "cards"), 
         where('username', '==', username),
         orderBy("starred", 'desc'), orderBy("created", 'desc'), limit(lim)
@@ -279,14 +274,14 @@ export class Firebase {
     var username = this.username();
     if (username === null) {
       console.log("No user logged in...");
-      return;
+      return false;
     }
 
     var snapshot = await getDoc(doc(this.firestore, "users", username));
     var data = snapshot.data();
     if (data === undefined) {
       console.log("Failed to parse user data");
-      return;
+      return false;
     }
 
     var lastClaim: Date;
@@ -302,9 +297,33 @@ export class Firebase {
     if (data['lastClaim'] === undefined || differentDay) {
       await this.createPack(3);
       await updateDoc(doc(this.firestore, "users", username), { lastClaim : new Date() });
-      alert("Daily pack claimed!");
+      return true;
     } else {
       alert("You already claimed your daily pack today.");
+      return false;
+    }
+  }
+
+  async hoursUntilDailyPack() {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return 100;
+    }
+
+    var snapshot = await getDoc(doc(this.firestore, "users", username));
+    var data = snapshot.data();
+    if (data === undefined) {
+      console.log("Failed to parse user data");
+      return 100;
+    }
+
+    let check = new Date();
+    if (data['lastClaim'] === undefined) {
+      return 0;
+    } else {
+      let date: Date =  data['lastClaim'].toDate()
+      return Math.ceil((date.getTime() + (1000 * 60 * 60 * 24) - check.getTime()) / (1000 * 60 * 60));
     }
   }
   
@@ -355,6 +374,30 @@ export class Firebase {
       });
     }
     return data;
+  }
+
+  async loadProfileStats(username: string) {
+    var profile = await getDoc(doc(this.firestore, "users", username));
+    var data = profile.data();
+    if (data) {
+      return {
+        bio: data['bio'] ?? '',
+        cards: data['cards'] ?? 0,
+        packs: data['packs'] ?? 0,
+        coins: data['balance'] ?? 0
+      }
+    } else {
+      return null;
+    }
+  }
+
+  async saveNewBio(bio: string) {
+    var username = this.username();
+    if (username === null) {
+      console.log("No user logged in...");
+      return;
+    }
+    await updateDoc(doc(this.firestore, 'users', username), { bio: bio });
   }
 
   async sellCard(cardId: string, value: number) {
@@ -612,13 +655,7 @@ export class Firebase {
     return binder;
   }
 
-  async loadUserBinders() : Promise<Binder[]> {
-    var username = this.username();
-    if (username === null) {
-      console.log("No user logged in...");
-      return [];
-    }
-
+  async loadUserBinders(username: string) : Promise<Binder[]> {
     let q = query(collection(this.firestore, "binders"),
       where('username', '==', username)
     );

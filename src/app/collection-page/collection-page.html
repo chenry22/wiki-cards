@@ -1,9 +1,9 @@
 <div class="container">
     <div class="content">
         <div class="binder-header">
-            <h1>My Binders ({{ binders.length }}/5)</h1>
+            <h1>Binders ({{ binders.length }}/5)</h1>
 
-            @if (binders.length < 5) {
+            @if (binders.length < 5 && currentUser()) {
                 <button matMiniFab (click)="showBinderCreate()">
                     <mat-icon>add</mat-icon>
                 </button>
@@ -24,11 +24,11 @@
         </div>
         <br>
         <div class="content-header">
-            <h1>My Collection</h1>
+            <h1>All Cards</h1>
             <mat-button-toggle-group name="sortOrder" aria-label="Sort Order" [value]="selectedSort" (change)="changeSort($event.value)">
                 <mat-button-toggle value="Date">Date</mat-button-toggle>
                 <mat-button-toggle value="Rarity">Rarity</mat-button-toggle>
-                <mat-button-toggle value="Effect">Effect</mat-button-toggle>
+                <mat-button-toggle value="Effect">Special</mat-button-toggle>
                 <mat-button-toggle value="Star">Starred</mat-button-toggle>
             </mat-button-toggle-group>
         </div>
@@ -36,9 +36,12 @@
         <div class="cards">
             @for (card of cards; track card.id) {
                 <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
-                    <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
-                        <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
-                    </button>
+                    @if (currentUser()) {
+                        <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
+                            <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
+                        </button>
+                    }
+
                     <div class="card-content">
                         <mat-card-title>{{ card.title }}</mat-card-title>
                         <img mat-card-image src="{{ card.thumbnail }}" alt="{{ card.title }}"/>
@@ -60,7 +63,7 @@
 </div>
 
 <app-full-card [(card)]="selectedCard" [(shown)]="selected" 
-    [currUser]="true" [(cards)]="cards"
+    [currUser]="currentUser()" [(cards)]="cards"
     [binders]="binders"></app-full-card>
 
 <app-binder-create [(shown)]="creatingBinder" 
