@@ -56,9 +56,8 @@ h1 {
     
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
+    justify-content: space-evenly;
+    box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.15);
     background-color: white;
     text-align: center;
 
@@ -78,15 +77,17 @@ h1 {
 }
 
 .cards mat-card img {
-    max-height: 180px;
+    height: 180px;
+    max-height: 60%;
     max-width: 90%;
     object-fit: contain;
-    margin: 14px auto;
+    margin: 12px auto;
 }
 
 .cards mat-card-title {
-    font-size: 1.3em;
+    font-size: 1.25em;
     line-height: normal;
+    min-height: fit-content;
 }
 
 .cards mat-card-subtitle {

@@ -1,0 +1,24 @@
+<div class="sessions">
+    @for (session of sessions; track $index) {
+        <mat-card class="session">
+            <div class="time">
+                <div class="session-time">{{ session.minutes }} minute session</div>
+                <div class="session-when">{{ timeSince(session.completed) }} ago</div>
+            </div>
+    
+            <div class="session-date">{{ sessionStartDate(session) }}</div>
+            <h4>Completed Tasks</h4>
+            <ul class="goals">
+                @for (goal of session.goals; track $index) {
+                    <li class="goal">{{ goal }}</li>
+                }
+            </ul>
+        </mat-card>
+    } @empty {
+        @if (loading) {
+            <p>Loading...</p>
+        } @else {
+            <p>[ None ]</p>
+        }
+    }
+</div>

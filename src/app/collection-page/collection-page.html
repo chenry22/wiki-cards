@@ -24,7 +24,11 @@
         </div>
         <br>
         <div class="content-header">
-            <h1>All Cards</h1>
+            @if (currentUser()) {
+                <h1>My Cards</h1>
+            } @else {
+                <h1>All Cards</h1>
+            }
             <mat-button-toggle-group name="sortOrder" aria-label="Sort Order" [value]="selectedSort" (change)="changeSort($event.value)">
                 <mat-button-toggle value="Date">Date</mat-button-toggle>
                 <mat-button-toggle value="Rarity">Rarity</mat-button-toggle>
@@ -36,8 +40,10 @@
         <div class="cards">
             @for (card of cards; track card.id) {
                 <mat-card [attr.id]="card.id" [attr.class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
-                    @if (currentUser()) {
-                        <button matIconButton class="star-button" (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
+                    @if (currentUser() || card.starred) {
+                        <button matIconButton class="star-button" 
+                            [disabled]="!currentUser()"
+                            (click)="card.starred ? unstarCard(card, $event) : starCard(card, $event)">
                             <mat-icon>{{ card.starred ? 'star' : 'star_outline' }}</mat-icon>
                         </button>
                     }
@@ -67,4 +73,5 @@
     [binders]="binders"></app-full-card>
 
 <app-binder-create [(shown)]="creatingBinder" 
-    [cards]="cards"></app-binder-create>
+    [cards]="cards" (loadMore)="loadCards()" 
+    [moreCards]="moreCards" [loading]="loading"></app-binder-create>

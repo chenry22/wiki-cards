@@ -13,10 +13,13 @@ export const routes: Routes = [
     { path: '', component: HomePage },
     { path: 'timer', component: TimerPage},
     { path: 'community', component: CommunityPage },
+    { path: 'community/binders', component: CommunityPage },
+    { path: 'community/packs', component: CommunityPage },
     { path: 'pack/:pack_id', component: PackPage }, 
 
     { path: 'profile/:username', component: ProfilePage },
     { path: 'profile/:username/collection', component: ProfilePage },
+    { path: 'profile/:username/sessions', component: ProfilePage },
     { path: 'binder/:binder_id', component: BinderPage },
     { path: 'packs', component: PacksPage },
 

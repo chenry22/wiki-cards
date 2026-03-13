@@ -1,7 +1,8 @@
 import { Component, effect, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Profile } from '../profile-page/profile-page';
 import { Effect, WikiCard } from '../collection-page/collection-page';
 import { Firebase } from '../firebase';
@@ -19,10 +20,14 @@ const CARD_LOAD_COUNT = 30;
 })
 export class CommunityPage {
   firebase = inject(Firebase);
-  
+  private location = inject(Location);
+  private route = inject(ActivatedRoute);
+
   profiles: Profile[] = [];
   cards: any[] = [];
   binders: Binder[] = [];
+
+  tab = 'users';
 
   lastCard: DocumentSnapshot | null = null;
 
@@ -34,10 +39,41 @@ export class CommunityPage {
     this.selected = true;
   }
 
+  showTab(tab: string) {
+    if (this.tab !== tab) {
+      this.tab = tab;
+      this.location.replaceState(`/community/${tab === 'users' ? '' : tab}`);
+
+      switch(tab) {
+        case 'users':
+          if (this.profiles.length === 0) {
+            this.loadProfiles();
+          }
+          break;
+        case 'binders':
+          if (this.binders.length === 0) {
+            this.loadBinders();
+          }
+          break;
+        case 'packs':
+          if (this.cards.length === 0) {
+            this.loadRecentCards();
+          }
+          break;
+      }
+    }
+  }
+
   constructor() {
-    this.loadProfiles();
-    this.loadRecentCards();
-    this.loadBinders();
+    this.route.url.subscribe(url => {
+      let last = url.pop();
+      if (!last) { return; }
+      if (['users', 'binders', 'packs'].includes(last.path)) {
+        this.showTab(last.path);
+      } else {
+        this.loadProfiles();
+      }
+    })
   }
 
   async loadProfiles() {
@@ -68,6 +104,7 @@ export class CommunityPage {
         rarity: this.firebase.rarityNumberToString(data['rarity']),
         effect: data['effect'],
         created: data['created'].toDate(),
+        original_owner: data['ogOwner'] ?? data['username']
       };
     })
     let cards: any[] = [];
@@ -78,14 +115,21 @@ export class CommunityPage {
         cards[cards.length - 1].push(card)
       }
     })
+    
     this.cards = this.cards.concat(cards);
+    this.cards.forEach((cardArr) => {
+      console.log(cardArr)
+      cardArr.forEach((c: any) => {
+        c.created = c.created.toDateString();
+      })
+    })
   }
 
   // Source - https://stackoverflow.com/a
   // Posted by Sky Sanders, modified by community. See post 'Timeline' for change history
   // Retrieved 2025-12-29, License - CC BY-SA 4.0
-  timeSince(date: Date) {
-    var seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+  timeSince(date: string) {
+    var seconds = Math.floor((Date.now() - Date.parse(date)) / 1000);
     var interval = seconds / 31536000;
 
     if (interval > 1) {

@@ -5,10 +5,11 @@ import { Effect, WikiCard } from '../collection-page/collection-page';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-full-card',
-  imports: [MatCardModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [MatCardModule, MatIconModule, MatMenuModule, MatButtonModule, RouterLink],
   templateUrl: './full-card.html',
   styleUrl: './full-card.css',
 })
@@ -38,6 +39,7 @@ export class FullCard {
   }
 
   async showCard() {
+    console.log(this.card())
     if (this.card() === undefined) { return; }
     this.desc = '';
 

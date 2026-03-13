@@ -23,25 +23,36 @@
 
 .overlay mat-card {
     position: relative;
-    min-width: 40dvw;
-    width: 500px;
-    max-width: 80dvw;
+    min-width: 38dvw;
+    width: 480px;
+    max-width: 76dvw;
 
-    max-height: 80dvh;
-    height: 800px;
-    padding: 30px;
+    max-height: 86dvh;
+    height: 840px;
+    padding: 24px 30px;
     background-color: white;
-    border-radius: 4px;
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .overlay mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
-    font-size: 1.5rem;
-    padding-bottom: 4px;
+    font-size: 1.7rem;
+    margin: 0;
+    margin-right: 10px;
+}
+.created {
+    font-size: 0.8rem;
+    line-height: normal;
+    color: rgb(122, 122, 122);
+}
+.created a {
+    text-decoration: none;
+}
+.created a:hover {
+    text-decoration: underline;
 }
 
 mat-card img {
@@ -53,22 +64,20 @@ mat-card img {
 
 .overlay mat-card-content {
     white-space: pre-line;
-    height: 32vh;
+    flex-grow: 10;
     overflow: auto;
 }
-.overlay mat-card-footer {
-    margin-top: auto;
-}
 
-.overlay mat-card-actions {
+.actions {
+    margin-top: 4px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 .effect-button {
     overflow: hidden;
     position: relative;
-    padding: 10px;
-    border-radius: 20px;
+    padding: 6px 8px;
     border: 2px inset rgba(0, 0, 0, 0.4);
 }
 

@@ -20,7 +20,9 @@ export interface WikiCard {
   thumbnail: string,
   created: string,
   starred: boolean,
-  effect: Effect
+  effect: Effect,
+  username: string,
+  original_owner: string,
 }
 
 export enum Effect {
@@ -56,6 +58,7 @@ export class CollectionPage {
   creatingBinder = false;
 
   showFullCard(card: WikiCard) {
+    console.log(this.cards)
     this.selectedCard = card;
     this.selected = true;
   }
@@ -111,7 +114,9 @@ export class CollectionPage {
         thumbnail: data['thumbnail'],
         created: data['created'].toDate().toDateString(),
         starred: data['starred'],
-        effect: data['effect'] ?? Effect.none
+        effect: data['effect'] ?? Effect.none,
+        username: data['username'],
+        original_owner: data['ogOwner'] ?? data['username']
       });
     });
     this.loading = false;

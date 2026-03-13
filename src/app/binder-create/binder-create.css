@@ -23,16 +23,17 @@
 
 .overlay mat-card {
     position: relative;
-    width: 80dvw;
+    width: 82dvw;
 
-    height: 90dvh;
-    padding: 20px;
+    height: 88dvh;
+    padding: 18px;
     background-color: white;
-    border-radius: 4px;
+    border-radius: 0;
+    border: 2px solid rgb(168, 168, 168);
 
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
 
     overflow: hidden auto;
 }
@@ -85,7 +86,6 @@
     max-width: 500px;
     white-space: pre-line;
     background-color: white;
-    border-radius: 12px;
     padding: 20px;
 
     display: flex;
@@ -112,22 +112,38 @@
 .cards {
     display: flex;
     overflow: auto hidden;
-    gap: 20px;
-    padding: 14px 20px;
+    gap: 14px;
+    padding: 10px 12px;
     background-color: white;
-    border-radius: 20px;
 }
 .cards mat-card {
-    min-width: 140px;
-    max-height: 200px;
+    min-width: 110px;
+    max-height: 180px;
+    justify-content: space-evenly;
     overflow: hidden;
 }
 .cards mat-card-title {
     font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
-    font-size: small;
+    font-size: 14px;
     line-height: normal;
+    text-align: center;
 }
 .cards mat-card img {
     object-fit: contain;
+    max-height: 80%;
     max-width: 100%;
+}
+
+.load-button {
+    background-color: rgb(241, 241, 241);
+    border: 1px solid gray;
+    height: fit-content;
+    width: fit-content;
+    padding: 6px;
+    align-self: center;
+    font-weight: bold;
+}
+.load-button:hover {
+    background-color: rgb(245, 245, 245);
+    cursor: pointer;
 }

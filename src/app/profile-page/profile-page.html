@@ -77,6 +77,9 @@
 
         <app-collection-page [class.hidden]="tab !== 'collection'"
             [username]="profile.username" [currentUser]="currentUser"></app-collection-page>
+
+        <app-sessions-page [class.hidden]="tab !== 'sessions'">
+            </app-sessions-page>
     } @else {
         <p>[ This user does not exist ]</p>
     }

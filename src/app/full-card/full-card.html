@@ -3,26 +3,38 @@
         <div class="background" (click)="hideCard()"></div>
         <mat-card [attr.class]="card()?.rarity">
             <mat-card-title>{{ card()?.title }}</mat-card-title>
-            <mat-card-footer><i>Collected {{ card()?.created }}</i></mat-card-footer>
+            <div class="created">Originally collected {{ card()?.created }} by <a [routerLink]="'/profile/' + card()?.original_owner">{{ card()?.original_owner }}</a></div>
             <img mat-card-image src="{{ card()?.thumbnail }}" alt="{{ card()?.title }}"/>
             <mat-card-content>
                 {{ desc }}
             </mat-card-content>
-            <mat-card-actions>
+
+            <div class="actions">
                 <a target="_blank" href="{{ card()?.link }}">Full Article ↗</a>
                 @if ((card()?.effect ?? 'none') !== 'none') {
                     <span></span>
                     <button [class]="'effect-button ' + card()?.effect">[ {{ card()?.effect?.toString()?.toUpperCase() ?? '' }} ]</button>
                 }
-            </mat-card-actions>
+            </div>
             
             @if (currUser()) {
                 <button class="menu-button" matIconButton [matMenuTriggerFor]="menu" aria-label="Card actions">
                     <mat-icon>more_vert</mat-icon>
                 </button>
+            } @else {
+                <button class="menu-button" matIconButton [matMenuTriggerFor]="trade" aria-label="Card actions">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
             }
         </mat-card>
     </div>
+    
+    <mat-menu #trade="matMenu" xPosition="after">
+        <button mat-menu-item (click)="removeFeatured()">
+            <mat-icon>swap_horiz</mat-icon>
+            <span>Create trade request</span>
+        </button>
+    </mat-menu>
 
     <mat-menu #menu="matMenu" xPosition="after">
         @if (profilePage()) {

@@ -1,0 +1,56 @@
+.sessions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-evenly;
+}
+
+.session {
+    border: 1.5px solid rgb(196, 196, 196);
+    background-color: rgb(251, 251, 251);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-radius: 0px;
+
+    transition: transform 0.3s ease-in-out;
+}
+
+.session:nth-child(even):hover {
+    transform: rotate(-0.5deg);
+}
+.session:nth-child(odd):hover {
+    transform: rotate(0.5deg);
+}
+
+.time {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.session-when {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif; 
+    font-size: 11px;
+    color: gray;
+}
+
+.session-time {
+    width: fit-content;
+    padding: 3px 5px;
+    font-size: 12px;
+    border: 1.5px solid gray;
+    background-color: rgb(6, 6, 55);
+    color: white;
+}
+
+.session h4 {
+    margin: 0;
+    padding: 6px 8px;
+    border: 1.5px solid rgb(168, 178, 216);
+    background-color: rgb(230, 230, 253);
+}
+.session ul {
+    margin: 0;
+}

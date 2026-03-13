@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --card-border-width: 2.5px;
+    --card-border-width: 2.8px;
 }
 
 * {
@@ -35,16 +35,16 @@ body { margin: 0; }
     border: var(--card-border-width) solid rgb(142, 142, 142);
 }
 .uncommon {
-    border: var(--card-border-width) solid rgb(8, 125, 8);
+    border: var(--card-border-width) solid rgb(5, 134, 28);
 }
 .rare {
     border: var(--card-border-width) solid rgb(52, 99, 209);
 }
 .epic {
-    border: var(--card-border-width) solid rgb(164, 11, 164);
+    border: var(--card-border-width) solid rgb(169, 23, 157);
 }
 .legendary {
-    border: var(--card-border-width) solid yellow;
+    border: var(--card-border-width) solid rgb(255, 217, 0);
 }
 
 

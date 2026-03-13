@@ -1,4 +1,4 @@
-import { Component, inject, input, model } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
 import { WikiCard } from '../collection-page/collection-page';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,10 @@ export class BinderCreate {
 
   shown = model<boolean>(false);
   cards = input<WikiCard[]>();
+
+  loadMore = output();
+  moreCards = input<boolean>();
+  loading = input<boolean>();
 
   binderTitle = '';
   binderPrivate = false;

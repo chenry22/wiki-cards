@@ -8,6 +8,8 @@ import { FullCard } from '../full-card/full-card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
+import { DocumentSnapshot } from '@angular/fire/firestore';
+import { SessionsPage } from '../sessions-page/sessions-page';
 
 export interface Profile {
   username: string,
@@ -18,7 +20,7 @@ export interface Profile {
 
 @Component({
   selector: 'app-profile-page',
-  imports: [MatCardModule, FullCard, CollectionPage,
+  imports: [MatCardModule, FullCard, CollectionPage, SessionsPage,
     MatIconModule, MatDividerModule, FormsModule],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
@@ -55,8 +57,7 @@ export class ProfilePage {
   tab = 'about';
 
   private reloadEffect = effect(() => {
-    // when username signal updates, this will reload balance for user
-    console.log("reload");
+    // when username signal updates, this will reload for user
     this.currentUser = this.firebase.username() === this.profile.username;
   });
 
@@ -73,6 +74,8 @@ export class ProfilePage {
       if(!last) { return; }
       if (last.path === 'collection') {
         this.showTab('collection');
+      } else if (last.path === 'sessions') {
+        this.showTab('sessions');
       }
     })
   }

@@ -369,7 +369,8 @@ export class Firebase {
           thumbnail: d['thumbnail'],
           created: d['created'],
           starred: d['starred'],
-          effect: d['effect']
+          effect: d['effect'],
+          original_owner: d['ogOwner'] ?? d['username']
         };
       });
     }
@@ -598,7 +599,9 @@ export class Firebase {
           created: d['created'],
           starred: d['starred'] ?? false,
           effect: d['effect'],
-          index: d['index']
+          index: d['index'],
+          username: d['username'],
+          orginal_owner: d['original_owner'] ?? d['username']
         }
       })
     }
@@ -792,5 +795,32 @@ export class Firebase {
 
     await deleteDoc(doc(this.firestore, 'binders', binder.id))
     return undefined
+  }
+
+  async loadSessions(lim: number, lastDoc: DocumentSnapshot | null) {
+    var username = this.username();
+    if (username === null) {
+      return undefined;
+    }
+
+    var q = query(collection(this.firestore, 'users', username, 'sessions'),
+      orderBy('completed', 'desc'), limit(lim)
+    );
+    if(lastDoc) {
+      q = query(collection(this.firestore, 'users', username, 'sessions'),
+        orderBy('completed', 'desc'), limit(lim), startAfter(lastDoc)
+      );
+    }
+
+    let sessions = await getDocs(q);
+    console.log(sessions.docs)
+    return sessions.docs.map((doc) => {
+      let d = doc.data()
+      return {
+        minutes: d['minutes'],
+        goals: d['goals'],
+        completed: d['completed'].toDate()
+      }
+    });
   }
 }

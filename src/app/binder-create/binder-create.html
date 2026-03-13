@@ -43,6 +43,10 @@
                     } @empty {
                         [ None ]
                     }
+
+                    @if (moreCards() && !loading()) {
+                        <button class="load-button" (click)="loadMore.emit()">Load More</button>
+                    }
                 </div>
             </mat-card-content>
             <mat-card-actions>
