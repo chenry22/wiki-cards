@@ -8,6 +8,8 @@ import { ProfilePage } from './profile-page/profile-page';
 import { CommunityPage } from './community-page/community-page';
 import { BinderPage } from './binder-page/binder-page';
 import { HomePage } from './home-page/home-page';
+import { SendTradePage } from './send-trade-page/send-trade-page';
+import { TradesPage } from './trades-page/trades-page';
 
 export const routes: Routes = [
     { path: '', component: HomePage },
@@ -22,6 +24,9 @@ export const routes: Routes = [
     { path: 'profile/:username/sessions', component: ProfilePage },
     { path: 'binder/:binder_id', component: BinderPage },
     { path: 'packs', component: PacksPage },
+
+    { path: 'send_trade/:username', component: SendTradePage },
+    { path: 'trades', component: TradesPage },
 
     { path: 'sign_in', component: AccountPage },
     { path: 'create_account', component: AccountPage, data: { create:true }},

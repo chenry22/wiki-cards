@@ -1,0 +1,130 @@
+<div class="container">
+    <div class="header-container">
+        <div class="info-header">
+            <div>
+                <div class="label">You</div>
+                <div class="send">Send away [{{ sending.length }}] cards</div>
+            </div>
+            <mat-icon aria-hidden="false" aria-label="Right arrow">arrow_forward</mat-icon>
+        </div>
+
+        <div class="send-trade">
+            <button (click)="sendTrade()">Send Trade</button>
+        </div>
+
+        <div class="info-header right">
+            <mat-icon naria-hidden="false" aria-label="Left arrow">arrow_back</mat-icon>
+            <div class="right">
+                <div class="label right"><a class="user-link" target="_blank" [routerLink]="'/profile/' + otherUser" >{{ otherUser }}</a></div>
+                <div class="send right">Sends you [{{ receiving.length }}] cards</div>
+            </div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div class='trade-container'>
+        <div class="trade-side">
+            <div class="cards-container">
+                <div class="cards">
+                    @for (card of sending; track $index) {
+                        <div [class]="card.rarity + ' ' + card.effect" (click)="toggleSendingCard($event, card)">
+                            <div>{{ card.title }}</div>
+                            <img [src]="card.thumbnail" />
+                        </div>
+                    } @empty {
+                        <div>[ Nothing ]</div>
+                    }
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+            <div class="header">Your Collection</div>
+            <mat-divider></mat-divider>
+
+            <div class="inventory">
+                <div class="full-inv">
+                    @for (card of yourInv; track $index) {
+                        <div [class]="card.rarity + ' ' + card.effect" (click)="toggleSendingCard($event, card)">
+                            <div>{{ card.title }}</div>
+                            <img [src]="card.thumbnail" />
+
+                            @if (isSending(card)) {
+                                <div class="active-card" (click)="toggleSendingCard($event, card)">
+                                    <mat-icon>check_circle</mat-icon>
+                                </div>
+                            }
+
+                            <div class="card-info-button">
+                                <mat-icon (click)="showFullCard($event, card)">info</mat-icon>
+                            </div>
+                        </div>
+                    } @empty {
+                        <div>[ Empty ]</div>
+                    }
+
+                    @if (moreYour && !loadingYour) {
+                        <div id="load-button">
+                            <button (click)="loadCurrUserCards()">Load More</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div id="middle-divider"></div>
+
+        <div class="trade-side">
+            <div class="cards-container">
+                <div class="cards">
+                    @for (card of receiving; track $index) {
+                        <div [class]="card.rarity + ' ' + card.effect" (click)="toggleReceivingCard($event, card)">
+                            <div>{{ card.title }}</div>
+                            <img [src]="card.thumbnail" />
+                        </div>
+                    } @empty {
+                        <div>[ Nothing ]</div>
+                    }
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+            <div class="header">
+                <a class="user-link" target="_blank" [routerLink]="'/profile/' + otherUser" >{{ otherUser }}</a>'s Collection
+            </div>
+            <mat-divider></mat-divider>
+
+            <div class="inventory">
+                <div class="full-inv">
+                    @for (card of otherInv; track $index) {
+                        <div [class]="card.rarity + ' ' + card.effect" (click)="toggleReceivingCard($event, card)">
+                            <div>{{ card.title }}</div>
+                            <img [src]="card.thumbnail" />
+
+                            @if (isReceiving(card)) {
+                                <div class="active-card">
+                                    <mat-icon (click)="toggleReceivingCard($event, card)">check_circle</mat-icon>
+                                </div>
+                            }
+                            
+                            <div class="card-info-button">
+                                <mat-icon (click)="showFullCard($event, card)">info</mat-icon>
+                            </div>
+                            
+                        </div>
+                    } @empty {
+                        <div>[ Empty ]</div>
+                    }
+
+                    @if (moreOther && !loadingOther) {
+                        <div id="load-button">
+                            <button (click)="loadOtherUserCards()">Load More</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="false"></app-full-card>

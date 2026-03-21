@@ -5,7 +5,7 @@ import { Effect, WikiCard } from '../collection-page/collection-page';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-full-card',
@@ -17,6 +17,7 @@ export class FullCard {
   @ViewChild(MatMenuTrigger) matMenu: MatMenuTrigger = new MatMenuTrigger;
   
   firebase = inject(Firebase);
+  private router = inject(Router);
 
   shown = model<boolean>(false);
   card = model<WikiCard>();
@@ -39,7 +40,6 @@ export class FullCard {
   }
 
   async showCard() {
-    console.log(this.card())
     if (this.card() === undefined) { return; }
     this.desc = '';
 
@@ -216,5 +216,13 @@ export class FullCard {
     } else {
       alert(err);
     }
+  }
+
+  async beginTrade() {
+    var c = this.card();
+    if (c === undefined) { return; }
+
+    // send to trade page, with card ID as info parsed
+    this.router.navigate(['/send_trade', c.username ], { state: { card: c } });
   }
 }

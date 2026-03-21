@@ -3,7 +3,7 @@
         <div class="background" (click)="hideCard()"></div>
         <mat-card [attr.class]="card()?.rarity">
             <mat-card-title>{{ card()?.title }}</mat-card-title>
-            <div class="created">Originally collected {{ card()?.created }} by <a [routerLink]="'/profile/' + card()?.original_owner">{{ card()?.original_owner }}</a></div>
+            <div class="created">Originally collected {{ card()?.created }} by <a [routerLink]="'/profile/' + card()?.originalOwner">{{ card()?.originalOwner }}</a></div>
             <img mat-card-image src="{{ card()?.thumbnail }}" alt="{{ card()?.title }}"/>
             <mat-card-content>
                 {{ desc }}
@@ -30,7 +30,7 @@
     </div>
     
     <mat-menu #trade="matMenu" xPosition="after">
-        <button mat-menu-item (click)="removeFeatured()">
+        <button mat-menu-item (click)="beginTrade()">
             <mat-icon>swap_horiz</mat-icon>
             <span>Create trade request</span>
         </button>

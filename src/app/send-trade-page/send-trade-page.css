@@ -1,0 +1,226 @@
+.container {
+    margin: 6px 50px 24px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.trade-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.label {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;;
+    background-color: rgb(50, 50, 105);
+    border: 1.5px solid rgb(46, 46, 68);
+    color: white;
+    padding: 8px 14px;
+    width: fit-content;
+    font-size: 16px;
+}
+.label a {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;;
+    color: white;
+    text-decoration: none;
+}
+.label a:hover {
+    text-decoration: underline;
+}
+
+.send {
+    color: rgb(78, 81, 101);
+}
+
+.right {
+    align-items: end;
+    text-align: right;
+}
+
+.trade-side {
+    flex-grow: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 36px;
+}
+.info-header mat-icon {
+    transform: scale(1.3);
+}
+
+.info-header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#middle-divider {
+    content: '';
+    width: 1px;
+    height: 90dvh;
+    border-left: 1.5px solid rgb(233, 233, 233);
+}
+
+.header {
+    font-size: 20px;
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+}
+.header a {
+    font-family: 'Linux Libertine','Georgia','Times','Source Serif 4',serif;
+    text-decoration: none;
+}
+.header a:hover {
+    text-decoration: underline;
+}
+
+.cards-container {
+    width: 40vw;
+    padding: 10px 0;
+    overflow: auto hidden;
+}
+.cards {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.cards > div {
+    position: relative;
+    padding: 6px 10px;
+    min-width: 105px;
+    max-width: 105px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+}
+.cards > div img {
+    object-fit: contain;
+    max-width: 80%;
+    max-height: 80%;
+}
+
+.inventory {
+    max-width: 48vw;
+    max-height: 52dvh;
+    overflow: hidden auto;
+    padding: 10px 0;
+}
+
+.full-inv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+.full-inv > div {
+    position: relative;
+
+    padding: 4px 6px;
+    min-width: 85px;
+    max-width: 85px;
+    height: 120px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+}
+.full-inv > div > div {
+    line-height: normal;
+    font-size: 10px;
+}
+.full-inv > div img {
+    object-fit: contain;
+    max-width: 80%;
+    max-height: 65%;
+}
+
+.active-card {
+    z-index: 3;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(200, 200, 200, 0.2);
+    pointer-events: none;
+}
+.active-card mat-icon {
+    color: rgb(57, 110, 57);
+    background-color: white;
+    border-radius: 100%;
+    position: absolute;
+    pointer-events: all;
+    right: -8px;
+    top: -8px;
+}
+.active-card mat-icon:hover {
+    cursor: pointer;
+}
+
+.card-info-button {
+    z-index: 3;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.card-info-button mat-icon {
+    color: rgba(145, 145, 145, 0.5);
+    background-color: white;
+    border-radius: 100%;
+    position: absolute;
+    left: -8px;
+    bottom: -8px;
+}
+.card-info-button mat-icon:hover {
+    cursor: pointer;
+    color: rgba(131, 131, 131, 0.8);
+}
+
+#load-button {
+    height: fit-content;
+    max-width: 100%;
+    flex-basis: 100%;
+    margin-top: 14px;
+}
+#load-button button {
+    padding: 8px 12px;
+    border: 1.5px solid rgb(216, 216, 216);
+    background-color: rgb(245, 245, 245);
+}
+#load-button button:hover {
+    cursor: pointer;
+    background-color: rgb(250, 250, 250);
+}
+
+.send-trade button {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 16px 20px;
+    background-color: rgb(227, 234, 255);
+    border: 1.5px solid rgb(199, 199, 240);
+}
+.send-trade button:hover {
+    cursor: pointer;
+    background-color: rgb(236, 242, 255);
+}

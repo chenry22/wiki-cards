@@ -1,0 +1,107 @@
+<div class="container">
+    <h1 class="header">Trades</h1>
+    <mat-divider></mat-divider>
+
+    <div class="section-container">
+        <div class="incoming">
+            <h3 class="section-header">Incoming</h3>
+
+            <div class="trades-container">
+                <div class="trades">
+                    @for (trade of incomingTrades; track $index) {
+                        <div class="trade">
+                            <div class="trade-header">
+                                <div class="left">
+                                    <div>Sent by <a class="profile-link" [routerLink]="'/profile/' + trade.sentBy">{{ trade.sentBy }}</a></div>
+                                    <div class="time-sent">{{ timeSince(trade.sent) }} ago</div>
+                                </div>
+                                <div class="right">
+                                    <!-- options -->
+                                    <div class="accept" (click)="acceptTrade(trade)">[ Accept ]</div>
+                                    <div class="reject" (click)="rejectTrade(trade)">[ Reject ]</div>
+                                </div>
+                            </div>
+
+                            <div class="trade-header">You send:</div>
+                            <div class="cards-container">
+                                <div class="cards">
+                                    @for (card of trade.cardsReceiving; track $index) {
+                                        <div [class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                                            <div>{{ card.title }}</div>
+                                            <img [src]="card.thumbnail" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="trade-header">You receive:</div>
+                            <div class="cards-container">
+                                <div class="cards">
+                                    @for (card of trade.cardsSending; track $index) {
+                                        <div [class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                                            <div>{{ card.title }}</div>
+                                            <img [src]="card.thumbnail" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    } @empty {
+                        <div>[ None ]</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="outgoing">
+            <h3 class="section-header">Outgoing</h3>
+            <div class="trades-container">
+                <div class="trades">
+                    @for (trade of outgoingTrades; track $index) {
+                        <div class="trade">
+                            <div class="trade-header">
+                                <div class="left">
+                                    <div>Sent to <a class="profile-link" [routerLink]="'/profile/' + trade.sentTo">{{ trade.sentTo }}</a></div>
+                                    <div class="time-sent">{{ timeSince(trade.sent) }} ago</div>
+                                </div>
+                                <div class="right">
+                                    <!-- options -->
+                                    <div (click)="cancelTrade(trade)">[ Cancel ]</div>
+                                </div>
+                            </div>
+
+                            <div class="trade-header">You send:</div>
+                            <div class="cards-container">
+                                <div class="cards">
+                                    @for (card of trade.cardsSending; track $index) {
+                                        <div [class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                                            <div>{{ card.title }}</div>
+                                            <img [src]="card.thumbnail" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="trade-header">You receive:</div>
+                            <div class="cards-container">
+                                <div class="cards">
+                                    @for (card of trade.cardsReceiving; track $index) {
+                                        <div [class]="card.rarity + ' ' + card.effect" (click)="showFullCard(card)">
+                                            <div>{{ card.title }}</div>
+                                            <img [src]="card.thumbnail" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    } @empty {
+                        <div>[ None ]</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-full-card [(card)]="selectedCard" [(shown)]="selected" 
+    [currUser]="selectedCard?.username === firebase.username()"></app-full-card>

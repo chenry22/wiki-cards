@@ -19,7 +19,7 @@
                 <span class="subtitle">See recent cards found!</span>
             </div>
         </div>
-        <div class="icon-container">
+        <div [class]="'icon-container ' + ((hoursTilDailyPack <= 0 && !claimed) ? '' : 'claimed-pack')">
             <div class="gradient"></div>
             <img class="icon" (click)="claimDailyPack()" src="card-pack.png"/>
         </div>
@@ -32,9 +32,9 @@
                 <a>Collection</a><br>
                 <span class="subtitle">All your cards and binders!</span>
             </div>
-            <div class="dis pad">
+            <div routerLink='/trades' class="pad">
                 <a>Trades</a><br>
-                <span class="subtitle">Coming soon...</span>
+                <span class="subtitle">All trades sent and received</span>
             </div>
             <div class="dis">
                 <a>Friends</a><br>

@@ -22,7 +22,7 @@ export interface WikiCard {
   starred: boolean,
   effect: Effect,
   username: string,
-  original_owner: string,
+  originalOwner: string,
 }
 
 export enum Effect {
@@ -51,7 +51,7 @@ export class CollectionPage {
   selectedSort = "Star";
 
   moreCards = true;
-  private loadLimit = 20;
+  private loadLimit = 25;
 
   selectedCard: WikiCard | undefined;
   selected = false;
@@ -116,7 +116,7 @@ export class CollectionPage {
         starred: data['starred'],
         effect: data['effect'] ?? Effect.none,
         username: data['username'],
-        original_owner: data['ogOwner'] ?? data['username']
+        originalOwner: data['originalOwner'] ?? data['username']
       });
     });
     this.loading = false;

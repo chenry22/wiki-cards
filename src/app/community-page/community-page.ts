@@ -97,6 +97,7 @@ export class CommunityPage {
       return {
         id: doc.id,
         username: data['username'],
+        wiki_id: data['wiki_id'],
 
         title: data['title'],
         thumbnail: data['thumbnail'],
@@ -104,7 +105,7 @@ export class CommunityPage {
         rarity: this.firebase.rarityNumberToString(data['rarity']),
         effect: data['effect'],
         created: data['created'].toDate(),
-        original_owner: data['ogOwner'] ?? data['username']
+        originalOwner: data['originalOwner'] ?? data['username']
       };
     })
     let cards: any[] = [];
@@ -118,7 +119,6 @@ export class CommunityPage {
     
     this.cards = this.cards.concat(cards);
     this.cards.forEach((cardArr) => {
-      console.log(cardArr)
       cardArr.forEach((c: any) => {
         c.created = c.created.toDateString();
       })

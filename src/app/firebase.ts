@@ -1,10 +1,11 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { DocumentSnapshot, Firestore, addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, runTransaction, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, addDoc, and, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, getDocs, increment, limit, orderBy, query, runTransaction, setDoc, startAfter, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateCurrentUser, updateProfile, user } from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Profile } from './profile-page/profile-page';
 import { Effect, WikiCard } from './collection-page/collection-page';
 import { Binder } from './binder-page/binder-page';
+import { Trade } from './trades-page/trades-page';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,20 @@ export class Firebase {
       }
     });
   }
+
+  // little script that made card ownership just a lot simpler to handle...
+  // async setOriginalOwner() {
+  //   let docs = await getDocs(collection(this.firestore, 'cards'));
+  //   var i = 0;
+  //   for (var d of docs.docs) {
+  //     let data = d.data();
+  //     i++;
+  //     if (data['username']) {
+  //       console.log("UPDATED " + i + " / " + docs.docs.length);
+  //       await updateDoc(doc(this.firestore, 'cards', d.id), 'originalOwner', data['username'])
+  //     }
+  //   }
+  // }
 
   async signIn(email: string, password: string) {
     await signInWithEmailAndPassword(this.auth, email, password);
@@ -163,6 +178,7 @@ export class Firebase {
         { 
           id: cards[i].id,
           username: username,
+          originalOwner: username,
           starred: false,
 
           title: cards[i].title,
@@ -370,7 +386,7 @@ export class Firebase {
           created: d['created'],
           starred: d['starred'],
           effect: d['effect'],
-          original_owner: d['ogOwner'] ?? d['username']
+          originalOwner: d['originalOwner'] ?? d['username']
         };
       });
     }
@@ -601,7 +617,7 @@ export class Firebase {
           effect: d['effect'],
           index: d['index'],
           username: d['username'],
-          orginal_owner: d['original_owner'] ?? d['username']
+          orginalOwner: d['originalOwner'] ?? d['username']
         }
       })
     }
@@ -813,7 +829,6 @@ export class Firebase {
     }
 
     let sessions = await getDocs(q);
-    console.log(sessions.docs)
     return sessions.docs.map((doc) => {
       let d = doc.data()
       return {
@@ -822,5 +837,133 @@ export class Firebase {
         completed: d['completed'].toDate()
       }
     });
+  }
+
+  async sendTradeRequest(otherUser: string, sending: WikiCard[], receiving: WikiCard[]) {
+    var username = this.username();
+    if (username === null) { 
+      return false; 
+    }
+    console.log(receiving);
+
+    let tradeData = {
+      'sentBy' : username,
+      'sentTo' : otherUser,
+      'sent' : new Date(),
+      'completed' : false,
+      'cardsSending' : sending.map(card => {
+        return { 
+          id: card.id,
+          rarity: card.rarity,
+          wiki_id: card.wiki_id,
+          title: card.title,
+          link: card.link,
+          thumbnail: card.thumbnail,
+          created: card.created,
+          effect: card.effect,
+        }
+      }),
+      'cardsReceiving' : receiving.map(card => {
+        return { 
+          id: card.id,
+          rarity: card.rarity,
+          wiki_id: card.wiki_id,
+          title: card.title,
+          link: card.link,
+          thumbnail: card.thumbnail,
+          created: card.created,
+          effect: card.effect,
+        }
+      }),
+    };
+    console.log(tradeData);
+    await addDoc(collection(this.firestore, 'trades'), tradeData);
+    return true;
+  }
+
+  async rejectTradeRequest(trade: Trade) {
+    var username = this.username();
+    if (username === null || (trade.sentBy !== username && trade.sentTo !== username)) { 
+      return false; 
+    }
+
+    await deleteDoc(doc(this.firestore, 'trades', trade.id));
+    return true;
+  }
+
+  async acceptTradeRequest(trade: Trade) {
+    var username = this.username();
+    if (username === null || trade.sentTo !== username) { 
+      return false; 
+    }
+
+    let t = await getDoc(doc(this.firestore, 'trades', trade.id));
+    let data = t.data();
+
+    if (!data || data['sentTo'] !== username) {
+      return false;
+    }
+
+    // go through all of cardsSending and cardsReceiving and set new owner...
+    let batch = writeBatch(this.firestore);
+    let sending = data['cardsSending'];
+    let receiving = data['cardsReceiving'];
+    for (var card of sending) {
+      if (card.id) {
+        batch.update(doc(this.firestore, 'cards', card.id), {
+          'username' : trade.sentTo
+        })
+      }
+    }
+    for (var card of receiving) {
+      if (card.id) {
+        batch.update(doc(this.firestore, 'cards', card.id), {
+          'username' : trade.sentBy
+        })
+      }
+    }
+
+    batch.update(doc(this.firestore, 'trades', trade.id), { completed: true })
+
+    await batch.commit();
+    return true;
+  }
+
+  async loadOutgoingTrades(lim: number, lastDoc: DocumentSnapshot | null) {
+    var username = this.username();
+    if (username === null) { 
+      return null; 
+    }
+
+    var q = query(collection(this.firestore, 'trades'),
+      and(where('sentBy', '==', username), where('completed', '==', false)), 
+      orderBy('sent', 'desc'), limit(lim)
+    );
+    if(lastDoc) {
+      q = query(collection(this.firestore, 'trades'),
+        and(where('sentBy', '==', username), where('completed', '==', false)), 
+        orderBy('sent', 'desc'), limit(lim), startAfter(lastDoc)
+      );
+    }
+    return await getDocs(q);
+  }
+
+  async loadIncomingTrades(lim: number, lastDoc: DocumentSnapshot | null) {
+    var username = this.username();
+    if (username === null) { 
+      return null; 
+    }
+
+    var q = query(collection(this.firestore, 'trades'),
+      and(where('sentTo', '==', username), where('completed', '==', false)), 
+      orderBy('sent', 'desc'), limit(lim)
+    );
+    if(lastDoc) {
+      q = query(collection(this.firestore, 'trades'),
+        and(where('sentTo', '==', username), where('completed', '==', false)), 
+        orderBy('sent', 'desc'), limit(lim), startAfter(lastDoc)
+      );
+    }
+    return await getDocs(q);
   }
 }

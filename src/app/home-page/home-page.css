@@ -54,6 +54,10 @@
     scale: 1.02;
 }
 
+.claimed-pack {
+    filter: grayscale(0.8);
+}
+
 .links {
     z-index: 1;
     height: 380px;
